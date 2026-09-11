@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova Paper Trader</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 15px;
+    background: #080b14;
+    color: #eef2ff;
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1 {
+    margin-bottom: 3px;
+}
+
+.subtitle {
+    color: #9aa4bd;
+    font-size: 13px;
+    margin-bottom: 18px;
+}
+
+.card {
+    background: #111729;
+    border: 1px solid #202a42;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.big {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 8px 0 15px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.metric {
+    background: #0b101e;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.label {
+    color: #8e99b3;
+    font-size: 11px;
+}
+
+.value {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 4px;
+}
+
+.badge {
+    padding: 6px 10px;
+    border-radius: 50px;
+    background: #30394f;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.buy {
+    background: #174d32;
+}
+
+.sell {
+    background: #57232c;
+}
+
+.wait {
+    background: #574718;
+}
+
+.hold {
+    background: #174d32;
+}
+
+.decision {
+    font-size: 25px;
+    font-weight: bold;
+    margin: 12px 0 5px;
+}
+
+.reason {
+    color: #9aa4bd;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.asset {
+    padding: 14px 0;
+    border-bottom: 1px solid #202a42;
+}
+
+.asset:last-child {
+    border-bottom: none;
+}
+
+.score {
+    padding: 5px 9px;
+    border-radius: 50px;
+    background: #30394f;
+    font-size: 12px;
+}
+
+.score-good {
+    background: #174d32;
+}
+
+.score-mid {
+    background: #574718;
+}
+
+.small {
+    font-size: 12px;
+}
+
+.muted {
+    color: #9aa4bd;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 12px;
+    background: #536dfe;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+button.secondary {
+    background: #202a42;
+}
+
+.log {
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.warning {
+    color: #ffcc66;
+    font-size: 12px;
+    line-height: 1.5;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Nova Paper Trader</h1>
+
+<div class="subtitle">
+    £100 virtual account • Kraken public market data • PAPER ONLY
+</div>
+
+<!-- ACCOUNT -->
+<div class="card">
+
+    <div class="row">
+        <span>Paper Equity</span>
+        <span id="status" class="badge wait">WAIT</span>
+    </div>
+
+    <div class="big" id="equity">£100.00</div>
+
+    <div class="grid">
+
+        <div class="metric">
+            <div class="label">CASH</div>
+            <div class="value" id="cash">£100.00</div>
+        </div>
+
+        <div class="metric">
+            <div class="label">PROFIT / LOSS</div>
+            <div class="value" id="pnl">£0.00</div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- DECISION -->
+<div class="card">
+
+    <div class="row">
+        <b>Nova's Decision</b>
+        <span id="time" class="small muted">--</span>
+    </div>
+
+    <div id="decision" class="decision">
+        WAIT
+    </div>
+
+    <div id="reason" class="reason">
+        Starting market scan...
+    </div>
+
+</div>
+
+<!-- CURRENT POSITION -->
+<div class="card">
+
+    <div class="row">
+        <b>Current Position</b>
+    </div>
+
+    <div id="position" class="reason">
+        No open position.
+    </div>
+
+</div>
+
+<!-- MARKETS -->
+<div class="card">
+
+    <div class="row">
+        <b>Market Competition</b>
+        <span class="small muted">15 minute</span>
+    </div>
+
+    <div id="markets">
+        Loading markets...
+    </div>
+
+</div>
+
+<!-- TRADE LOG -->
+<div class="card">
+
+    <b>Nova Trade Log</b>
+
+    <div id="log" class="log muted" style="margin-top:10px;">
+        No trades yet.
+    </div>
+
+</div>
+
+<div class="card">
+
+    <div class="warning">
+        PAPER TRADING ONLY.<br><br>
+        This program does not have permission to access your Kraken account,
+        wallet, funds or withdrawals. It cannot place real orders.
+    </div>
+
+</div>
+
+<button onclick="scanMarkets()">
+    SCAN MARKETS NOW
+</button>
+
+<button class="secondary" onclick="resetAccount()">
+    RESET PAPER ACCOUNT
+</button>
+
+
+<script>
+
+/* =========================================================
+   NOVA PAPER TRADER
+   ========================================================= */
+
+/*
+    Starting capital
+*/
+
+const STARTING_CASH = 100.00;
+
+
+/*
+    Simulated trading fee.
+
+    This is deliberately conservative so that the paper
+    account doesn't look artificially profitable.
+*/
+
+const FEE = 0.008;
+
+
+/*
+    Risk controls
+*/
+
+const MAX_POSITION_PERCENT = 0.60;
+
+const MAX_RISK_GBP = 2.00;
+
+const STOP_LOSS = 0.04;
+
+const TAKE_PROFIT = 0.08;
+
+
+/*
+    Nova only buys when the setup scores at least this.
+*/
+
+const MIN_BUY_SCORE = 5;
+
+
+/*
+    Assets Nova is allowed to compete between.
+
+    LINK is included but is NOT automatically favoured.
+*/
+
+const MARKETS = [
+
+    {
+        name: "BTC",
+        kraken: "XBTGBP"
+    },
+
+    {
+        name: "ETH",
+        kraken: "ETHGBP"
+    },
+
+    {
+        name: "LINK",
+        kraken: "LINKGBP"
+    },
+
+    {
+        name: "SOL",
+        kraken: "SOLGBP"
+    },
+
+    {
+        name: "XRP",
+        kraken: "XRPGBP"
+    }
+
+];
+
+
+/*
+    Paper account state.
+*/
+
+let state =
+    JSON.parse(
+        localStorage.getItem("novaPaperAccount")
+    )
+    ||
+    {
+
+        cash: STARTING_CASH,
+
+        position: null,
+
+        trades: [],
+
+        lastDecision: "WAIT",
+
+        lastReason: "Starting Nova."
+
+    };
+
+
+/*
+    Save account.
+*/
+
+function saveState() {
+
+    localStorage.setItem(
+        "novaPaperAccount",
+        JSON.stringify(state)
+    );
+
+}
+
+
+/*
+    Money formatter.
+*/
+
+function money(value) {
+
+    return "£" + Number(value).toFixed(2);
+
+}
+
+
+/*
+    EMA calculation.
+*/
+
+function EMA(values, period) {
+
+    if (values.length === 0) {
+        return 0;
+    }
+
+    const multiplier =
+        2 / (period + 1);
+
+    let ema = values[0];
+
+    for (
+        let i = 1;
+        i < values.length;
+        i++
+    ) {
+
+        ema =
+            (
+                values[i] * multiplier
+            )
+            +
+            (
+                ema * (1 - multiplier)
+            );
+
+    }
+
+    return ema;
+
+}
+
+
+/*
+    Calculate Nova's technical score.
+*/
+
+
+function analyseMarket(candles) {
+
+    const closes =
+        candles.map(
+            candle => Number(candle[4])
+        );
+
+    const highs =
+        candles.map(
+            candle => Number(candle[2])
+        );
+
+    const volumes =
+        candles.map(
+            candle => Number(candle[6])
+        );
+
+
+    /*
+        Need enough candles.
+    */
+
+    if (closes.length < 60) {
+
+        return null;
+
+    }
+
+
+    const last =
+        closes[closes.length - 1];
+
+
+    /*
+        Trend
+    */
+
+    const ema20 =
+        EMA(
+            closes.slice(-80),
+            20
+        );
+
+    const ema50 =
+        EMA(
+            closes.slice(-100),
+            50
+        );
+
+
+    /*
+        Momentum
+    */
+
+    const momentum =
+        last /
+        closes[closes.length - 6]
+        - 1;
+
+
+    /*
+        20 candle breakout
+    */
+
+    const previousHighs =
+        highs.slice(-21, -1);
+
+    const breakoutLevel =
+        Math.max(...previousHighs);
+
+
+    /*
+        Volume confirmation
+    */
+
+    const previousVolumes =
+        volumes.slice(-21, -1);
+
+    const averageVolume =
+        previousVolumes.reduce(
+            (a, b) => a + b,
+            0
+        )
+        /
+        previousVolumes.length;
+
+
+    /*
+        Score
+    */
+
+    let score = 0;
+
+    let reasons = [];
+
+
+    /*
+        Price above EMA20
+    */
+
+    if (last > ema20) {
+
+        score += 1;
+
+        reasons.push(
+            "price above EMA20"
+        );
+
+    }
+
+
+    /*
+        EMA trend
+    */
+
+    if (ema20 > ema50) {
+
+        score += 1;
+
+        reasons.push(
+            "EMA20 above EMA50"
+        );
+
+    }
+
+
+    /*
+        Momentum
+    */
+
+    if (momentum > 0.008) {
+
+        score += 1;
+
+        reasons.push(
+            "positive momentum"
+        );
+
+    }
+
+
+    /*
+        Breakout
+    */
+
+    if (last > breakoutLevel) {
+
+        score += 2;
+
+        reasons.push(
+            "20-candle breakout"
+        );
+
+    }
+
+
+    /*
+        Volume
+    */
+
+    if (
+        volumes[volumes.length - 1]
+        >
+        averageVolume * 1.25
+    ) {
+
+        score += 1;
+
+        reasons.push(
+            "volume confirmation"
+        );
+
+    }
+
+
+    return {
+
+        last,
+
+        ema20,
+
+        ema50,
+
+        momentum,
+
+        breakoutLevel,
+
+        averageVolume,
+
+        score,
+
+        reasons
+
+    };
+
+}
+
+
+/*
+    Get Kraken public OHLC data.
+
+    IMPORTANT:
+    This endpoint does NOT require your Kraken API key.
+*/
+
+
+async function getMarketData(market) {
+
+    const url =
+        "https://api.kraken.com/0/public/OHLC"
+        +
+        "?pair="
+        +
+        market.kraken
+        +
+        "&interval=15";
+
+
+    const response =
+        await fetch(url);
+
+
+    const data =
+        await response.json();
+
+
+    if (
+        data.error &&
+        data.error.length > 0
+    ) {
+
+        throw new Error(
+            data.error.join(", ")
+        );
+
+    }
+
+
+    const resultKeys =
+        Object.keys(data.result);
+
+
+    const pairKey =
+        resultKeys.find(
+            key => key !== "last"
+        );
+
+
+    if (!pairKey) {
+
+        throw new Error(
+            "Kraken returned no candle data."
+        );
+
+    }
+
+
+    return data.result[pairKey];
+
+}
+
+
+/*
+    Scan every permitted market.
+*/
+
+
+async function scanMarkets() {
+
+    setDecision(
+        "WAIT",
+        "Nova is scanning BTC, ETH, LINK, SOL and XRP..."
+    );
+
+
+    const results = [];
+
+
+    for (
+        const market of MARKETS
+    ) {
+
+        try {
+
+            const candles =
+                await getMarketData(
+                    market
+                );
+
+
+            const analysis =
+                analyseMarket(
+                    candles
+                );
+
+
+            if (analysis) {
+
+                results.push({
+
+                    market,
+
+                    analysis
+
+                });
+
+            }
+
+        }
+        catch (error) {
+
+            console.error(
+                market.name,
+                error
+            );
+
+        }
+
+    }
+
+
+    /*
+        Rank strongest first.
+    */
+
+    results.sort(
+        (a, b) =>
+            b.analysis.score
+            -
+            a.analysis.score
+    );
+
+
+    displayMarkets(
+        results
+    );
+
+
+    /*
+        Give the decision engine the
+        ranked markets.
+    */
+
+    makeDecision(
+        results
+    );
+
+}
+
+
+/*
+    Nova decision engine.
+*/
+
+
+function makeDecision(markets) {
+
+    if (markets.length === 0) {
+
+        setDecision(
+            "WAIT",
+            "No market data was available."
+        );
+
+        return;
+
+    }
+
+
+    const strongest =
+        markets[0];
+
+
+    /*
+        If we already own something,
+        manage the existing position first.
+    */
+
+    if (state.position) {
+
+        managePosition(
+            markets
+        );
+
+        return;
+
+    }
+
+
+    /*
+        No position.
+
+        Nova waits unless the setup
+        passes the required threshold.
+    */
+
+    const score =
+        strongest.analysis.score;
+
+
+    if (
+        score >= MIN_BUY_SCORE
+    ) {
+
+        openPaperPosition(
+            strongest
+        );
+
+    }
+    else {
+
+        setDecision(
+
+            "WAIT",
+
+            "No setup is strong enough. "
+            +
+            "Best candidate is "
+            +
+            strongest.market.name
+            +
+            " with "
+            +
+            score
+            +
+            "/6."
+
+        );
+
+    }
+
+}
+
+
+/*
+    Open a paper position.
+*/
+
+
+function openPaperPosition(candidate) {
+
+    const analysis =
+        candidate.analysis;
+
+
+    /*
+        Maximum position size.
+    */
+
+    let allocation =
+        Math.min(
+
+            state.cash
+            *
+            MAX_POSITION_PERCENT,
+
+            60,
+
+            MAX_RISK_GBP
+            /
+            STOP_LOSS
+
+        );
+
+
+    /*
+        Simulated fee.
+    */
+
+    const fee =
+        allocation * FEE;
+
+
+    /*
+        Actual units purchased.
+    */
+
+    const units =
+        (
+            allocation - fee
+        )
+        /
+        analysis.last;
+
+
+    /*
+        Don't trade microscopic amounts.
+    */
+
+    if (
+        allocation < 1 ||
+        units <= 0
+    ) {
+
+        setDecision(
+            "WAIT",
+            "Position size is too small."
+        );
+
+        return;
+
+    }
+
+
+    state.cash -= allocation;
+
+
+    state.position = {
+
+        symbol:
+            candidate.market.name,
+
+        pair:
+            candidate.market.kraken,
+
+        units:
+
+            units,
+
+        entry:
+
+            analysis.last,
+
+        allocation:
+
+            allocation,
+
+        opened:
+
+            new Date().toISOString()
+
+    };
+
+
+    state.trades.unshift({
+
+        time:
+            new Date().toISOString(),
+
+        side:
+            "BUY",
+
+        symbol:
+            candidate.market.name,
+
+        price:
+            analysis.last,
+
+        value:
+            allocation,
+
+        fee:
+            fee,
+
+        reason:
+            "Score "
+            +
+            analysis.score
+            +
+            "/6: "
+            +
+            analysis.reasons.join(", ")
+
+    });
+
+
+    setDecision(
+
+        "BUY",
+
+        "Nova selected "
+        +
+        candidate.market.name
+        +
+        ". Score "
+        +
+        analysis.score
+        +
+        "/6. "
+        +
+        analysis.reasons.join(", ")
+        +
+        "."
+
+    );
+
+
+    saveState();
+
+    render();
+
+}
+
+
+/*
+    Manage an open position.
+*/
+
+
+function managePosition(markets) {
+
+    const position =
+        state.position;
+
+
+    const current =
+        markets.find(
+
+            x =>
+                x.market.name
+                ===
+                position.symbol
+
+        );
+
+
+    if (!current) {
+
+        setDecision(
+            "HOLD",
+            "Position exists but current price data is unavailable."
+        );
+
+        return;
+
+    }
+
+
+    const price =
+        current.analysis.last;
+
+
+    const returnPercent =
+        price
+        /
+        position.entry
+        -
+        1;
+
+
+    /*
+        STOP LOSS
+    */
+
+    if (
+        returnPercent
+        <=
+        -STOP_LOSS
+    ) {
+
+        closePosition(
+
+            current,
+
+            "stop loss"
+
+        );
+
+        return;
+
+    }
+
+
+    /*
+        TAKE PROFIT
+    */
+
+    if (
+        returnPercent
+        >=
+        TAKE_PROFIT
+    ) {
+
+        closePosition(
+
+            current,
+
+            "take profit"
+
+        );
+
+        return;
+
+    }
+
+
+    /*
+        Trend deterioration exit.
+    */
+
+    if (
+
+        price
+        <
+        current.analysis.ema20
+
+        &&
+
+        current.analysis.momentum
+        <
+        0
+
+    ) {
+
+        closePosition(
+
+            current,
+
+            "trend deterioration"
+
+        );
+
+        return;
+
+    }
+
+
+    /*
+        Otherwise HOLD.
+    */
+
+    setDecision(
+
+        "HOLD",
+
+        "Holding "
+        +
+        position.symbol
+        +
+        ". Unrealised return: "
+        +
+        (
+            returnPercent * 100
+        ).toFixed(2)
+        +
+        "%."
+
+    );
+
+}
+
+
+/*
+    Close position.
+*/
+
+
+function closePosition(
+    market,
+    reason
+) {
+
+    const position =
+        state.position;
+
+
+    const price =
+        market.analysis.last;
+
+
+    const gross =
+        position.units
+        *
+        price;
+
+
+    const fee =
+        gross * FEE;
+
+
+    const net =
+        gross - fee;
+
+
+    state.cash += net;
+
+
+    const returnPercent =
+        price
+        /
+        position.entry
+        -
+        1;
+
+
+    state.trades.unshift({
+
+        time:
+            new Date().toISOString(),
+
+        side:
+            "SELL",
+
+        symbol:
+            position.symbol,
+
+        price:
+            price,
+
+        value:
+            gross,
+
+        fee:
+            fee,
+
+        reason:
+            reason
+
+    });
+
+
+    state.position =
+        null;
+
+
+    setDecision(
+
+        "SELL",
+
+        "Closed "
+        +
+        market.market.name
+        +
+        " at "
+        +
+        (
+            returnPercent * 100
+        ).toFixed(2)
+        +
+        "% before fees. Reason: "
+        +
+        reason
+        +
+        "."
+
+    );
+
+
+    saveState();
+
+    render();
+
+}
+
+
+/*
+    Update decision display.
+*/
+
+
+function setDecision(
+    decision,
+    reason
+) {
+
+    state.lastDecision =
+        decision;
+
+    state.lastReason =
+        reason;
+
+
+    document.getElementById(
+        "decision"
+    ).textContent =
+        decision;
+
+
+    document.getElementById(
+        "reason"
+    ).textContent =
+        reason;
+
+
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+
+    status.textContent =
+        decision;
+
+
+    status.className =
+        "badge";
+
+
+    if (
+        decision === "BUY"
+        ||
+        decision === "HOLD"
+    ) {
+
+        status.classList.add(
+            "buy"
+        );
+
+    }
+    else if (
+        decision === "SELL"
+    ) {
+
+        status.classList.add(
+            "sell"
+        );
+
+    }
+    else {
+
+        status.classList.add(
+            "wait"
+        );
+
+    }
+
+
+    saveState();
+
+}
+
+
+/*
+    Display market rankings.
+*/
+
+
+function displayMarkets(
+    markets
+) {
+
+    const container =
+        document.getElementById(
+            "markets"
+        );
+
+
+    if (
+        markets.length === 0
+    ) {
+
+        container.innerHTML =
+            '<div class="muted">No data.</div>';
+
+        return;
+
+    }
+
+
+    let html = "";
+
+
+    markets.forEach(
+        item => {
+
+            const a =
+                item.analysis;
+
+
+            let scoreClass =
+                "";
+
+
+            if (
+                a.score >= 5
+            ) {
+
+                scoreClass =
+                    "score-good";
+
+            }
+            else if (
+                a.score >= 3
+            ) {
+
+                scoreClass =
+                    "score-mid";
+
+            }
+
+
+            html += `
+
+                <div class="asset">
+
+                    <div class="row">
+
+                        <b>
+                            ${item.market.name}
+                        </b>
+
+                        <span
+                            class="score ${scoreClass}">
+                            ${a.score}/6
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="row small"
+                        style="margin-top:7px;">
+
+                        <span>
+                            ${money(a.last)}
+                        </span>
+
+                        <span>
+                            Momentum:
+                            ${(a.momentum * 100).toFixed(2)}%
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="muted small"
+                        style="margin-top:5px;">
+
+                        ${
+                            a.reasons.length
+                            ?
+                            a.reasons.join(" • ")
+                            :
+                            "No strong confirmation"
+                        }
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    container.innerHTML =
+        html;
+
+}
+
+
+/*
+    Calculate account equity.
+
+    In this simple first version the
+    open position is valued at entry
+    until the next scan updates it.
+*/
+
+
+function calculateEquity() {
+
+    if (
+        !state.position
+    ) {
+
+        return state.cash;
+
+    }
+
+
+    return (
+
+        state.cash
+        +
+        (
+            state.position.units
+            *
+            state.position.entry
+        )
+
+    );
+
+}
+
+
+/*
+    Render account.
+*/
+
+
+function render() {
+
+    const equity =
+        ca
