@@ -1,2 +1,2 @@
 # nova-paper-trader
-Nova crypto paper trading system
+Nova test
