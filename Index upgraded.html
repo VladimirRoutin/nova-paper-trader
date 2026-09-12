@@ -1,1 +1,4299 @@
 
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova Paper Trader v5</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #0b0d12;
+  color: #eef1f7;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.wrap {
+  max-width: 1200px;
+  margin: auto;
+  padding: 16px;
+}
+
+.card {
+  background: #151820;
+  border: 1px solid #2b303b;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 12px 0;
+}
+
+h1 {
+  font-size: 32px;
+  margin: 0 0 5px;
+}
+
+h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+h3 {
+  margin: 0 0 7px;
+}
+
+.muted {
+  color: #9da5b5;
+}
+
+.small {
+  font-size: 12px;
+}
+
+.tiny {
+  font-size: 11px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.metric {
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.submetric {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #9da5b5;
+}
+
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 15px;
+  margin: 4px 6px 4px 0;
+  font-weight: 800;
+  background: #e9edf3;
+  color: #111;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: .9;
+}
+
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+button.danger {
+  background: #ff8585;
+}
+
+button.secondary {
+  background: #303642;
+  color: #eef1f7;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+th,
+td {
+  padding: 9px;
+  border-bottom: 1px solid #2b303b;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.good {
+  color: #70e39a;
+}
+
+.bad {
+  color: #ff8585;
+}
+
+.wait {
+  color: #f0ca65;
+}
+
+.err {
+  color: #ff8585;
+}
+
+.neutral {
+  color: #aeb6c7;
+}
+
+pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.status {
+  margin-top: 7px;
+}
+
+.status-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 800;
+  background: #303642;
+}
+
+.badge.good {
+  background: rgba(112, 227, 154, .12);
+}
+
+.badge.bad {
+  background: rgba(255, 133, 133, .12);
+}
+
+.badge.wait {
+  background: rgba(240, 202, 101, .12);
+}
+
+.decision {
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.reason {
+  margin-top: 7px;
+  line-height: 1.5;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.three-col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.stat-box {
+  background: #10131a;
+  border: 1px solid #282d38;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.stat-label {
+  color: #9da5b5;
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.progress {
+  height: 8px;
+  background: #292e39;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 7px;
+}
+
+.progress-inner {
+  height: 100%;
+  width: 0%;
+  background: #70e39a;
+  transition: width .3s;
+}
+
+.warning {
+  border-left: 4px solid #f0ca65;
+  padding-left: 10px;
+}
+
+.info {
+  border-left: 4px solid #70a7ff;
+  padding-left: 10px;
+}
+
+@media (min-width: 700px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .two-col,
+  .three-col {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 27px;
+  }
+
+  table {
+    font-size: 11px;
+  }
+
+  th,
+  td {
+    padding: 7px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <h1>Nova Paper Trader v5</h1>
+
+  <div class="muted">
+    £100 virtual account • multi-factor strategy • live public market data • paper trading only
+  </div>
+
+
+  <!-- =====================================================
+       ACCOUNT
+       ===================================================== -->
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="small muted">EQUITY</div>
+      <div id="equity" class="metric">£100.00</div>
+      <div id="equitySub" class="submetric">Starting £100.00</div>
+    </div>
+
+    <div class="card">
+      <div class="small muted">CASH</div>
+      <div id="cash" class="metric">£100.00</div>
+      <div id="investedSub" class="submetric">Invested £0.00</div>
+    </div>
+
+    <div class="card">
+      <div class="small muted">NET P/L</div>
+      <div id="pnl" class="metric">£0.00</div>
+      <div id="pnlPercent" class="submetric">0.00%</div>
+    </div>
+
+    <div class="card">
+      <div class="small muted">POSITION</div>
+      <div id="pos" class="metric">NONE</div>
+      <div id="positionSub" class="submetric">No open position</div>
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       CONTROLS
+       ===================================================== -->
+
+  <div class="card">
+
+    <div class="status-line">
+
+      <div>
+
+        <button id="scanBtn" onclick="scan()">
+          SCAN MARKET NOW
+        </button>
+
+        <button
+          class="secondary"
+          onclick="resetPaper()"
+        >
+          RESET £100
+        </button>
+
+      </div>
+
+      <div>
+        <span id="regimeBadge" class="badge wait">
+          MARKET: UNKNOWN
+        </span>
+      </div>
+
+    </div>
+
+    <div id="status" class="muted status">
+      Ready — press Scan Market Now.
+    </div>
+
+    <div class="small muted" style="margin-top:7px">
+      Next automatic scan:
+      <b id="countdown">--</b>
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       DECISION
+       ===================================================== -->
+
+  <div class="card">
+
+    <h2>Nova's current decision</h2>
+
+    <div
+      id="decision"
+      class="decision wait"
+    >
+      WAIT
+    </div>
+
+    <div
+      id="reason"
+      class="reason muted"
+    >
+      No trade until live data has been validated.
+    </div>
+
+    <div
+      id="decisionDetails"
+      class="small muted"
+      style="margin-top:10px"
+    >
+      —
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       PERFORMANCE
+       ===================================================== -->
+
+  <div class="card">
+
+    <h2>Performance</h2>
+
+    <div class="three-col">
+
+      <div class="stat-box">
+        <div class="stat-label">TRADES</div>
+        <div id="totalTrades" class="stat-value">0</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-label">WIN RATE</div>
+        <div id="winRate" class="stat-value">0%</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-label">REALIZED P/L</div>
+        <div id="realizedPnl" class="stat-value">£0.00</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-label">FEES PAID</div>
+        <div id="fees" class="stat-value">£0.00</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-label">BEST TRADE</div>
+        <div id="bestTrade" class="stat-value">£0.00</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-label">WORST TRADE</div>
+        <div id="worstTrade" class="stat-value">£0.00</div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       RISK
+       ===================================================== -->
+
+  <div class="card">
+
+    <h2>Risk monitor</h2>
+
+    <div class="three-col">
+
+      <div class="stat-box">
+        <div class="stat-label">CURRENT DRAWDOWN</div>
+        <div id="drawdown" class="stat-value">0.00%</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-label">MAX DRAWDOWN</div>
+        <div id="maxDrawdown" class="stat-value">0.00%</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-label">TRADE COOLDOWN</div>
+        <div id="cooldown" class="stat-value">READY</div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       OPEN POSITION
+       ===================================================== -->
+
+  <div class="card">
+
+    <h2>Open position</h2>
+
+    <div id="position" class="muted">
+      None
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MARKET REGIME
+       ===================================================== -->
+
+  <div class="card">
+
+    <h2>Market regime</h2>
+
+    <div class="two-col">
+
+      <div>
+
+        <div id="regimeTitle">
+          Waiting for BTC data...
+        </div>
+
+        <div
+          id="regimeReason"
+          class="muted small"
+          style="margin-top:6px"
+        >
+          Nova uses BTC as the broad market reference.
+        </div>
+
+      </div>
+
+      <div>
+
+        <div class="small muted">
+          MARKET CONFIDENCE
+        </div>
+
+        <div class="progress">
+          <div
+            id="regimeProgress"
+            class="progress-inner"
+          ></div>
+        </div>
+
+        <div
+          id="regimeConfidence"
+          class="small muted"
+          style="margin-top:5px"
+        >
+          0%
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MARKET RANKING
+       ===================================================== -->
+
+  <div class="card">
+
+    <h2>Market ranking</h2>
+
+    <div class="muted small">
+      Nova scores momentum, trend, relative strength,
+      daily range position, volatility and market regime.
+      Higher scores represent stronger setups — not guaranteed profits.
+    </div>
+
+    <div style="overflow:auto; margin-top:10px">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Asset</th>
+            <th>Price</th>
+            <th>24h</th>
+            <th>Trend</th>
+            <th>Momentum</th>
+            <th>BTC Rel.</th>
+            <th>Range</th>
+            <th>Vol.</th>
+            <th>Score</th>
+            <th>Signal</th>
+            <th>Data</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="markets">
+
+          <tr>
+            <td colspan="11">
+              Waiting for scan…
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       TRADE LOG
+       ===================================================== -->
+
+  <div class="card">
+
+    <h2>Trade log</h2>
+
+    <pre id="log" class="muted">No trades yet.</pre>
+
+  </div>
+
+
+  <!-- =====================================================
+       STRATEGY INFORMATION
+       ===================================================== -->
+
+  <div class="card">
+
+    <h2>Nova strategy</h2>
+
+    <div class="two-col">
+
+      <div>
+
+        <h3>Entry philosophy</h3>
+
+        <div class="small muted">
+          Nova does not buy simply because an asset has risen.
+          A potential entry must have sufficient momentum,
+          trend confirmation, relative strength and an acceptable
+          market environment.
+        </div>
+
+      </div>
+
+      <div>
+
+        <h3>Risk philosophy</h3>
+
+        <div class="small muted">
+          Nova can deliberately WAIT. Position size is capped,
+          losing trades trigger a cooldown, and profitable
+          positions can use a trailing stop.
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       DISCLAIMER
+       ===================================================== -->
+
+  <div class="card">
+
+    <div class="warning small muted">
+
+      <b>PAPER TRADING ONLY.</b><br><br>
+
+      This application does not use a Kraken private API key.
+      It cannot place real orders, withdraw funds or access your
+      exchange account.
+
+      Public market data can be delayed, unavailable or inaccurate.
+      A high score does not mean a profitable trade is guaranteed.
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   NOVA PAPER TRADER v5
+   ========================================================= */
+
+
+/* =========================================================
+   CORE SETTINGS
+   ========================================================= */
+
+const VERSION = "5.0";
+
+const STARTING_BALANCE = 100;
+
+const TRADING_FEE = 0.004;
+
+/*
+   Maximum percentage of available cash used for one entry.
+*/
+const MAX_ALLOCATION = 0.60;
+
+/*
+   Maximum absolute allocation.
+*/
+const MAX_POSITION_GBP = 60;
+
+/*
+   Initial stop.
+*/
+const BASE_STOP_LOSS = 0.025;
+
+/*
+   Standard target.
+*/
+const TAKE_PROFIT = 0.055;
+
+/*
+   Once a trade reaches this profit,
+   trailing protection becomes active.
+*/
+const TRAILING_ACTIVATION = 0.025;
+
+/*
+   Trail behind the highest observed price.
+*/
+const TRAILING_DISTANCE = 0.018;
+
+/*
+   Minimum score required to consider buying.
+*/
+const MIN_ENTRY_SCORE = 72;
+
+/*
+   Maximum number of completed trades in
+   a rolling 24-hour period.
+*/
+const MAX_TRADES_24H = 6;
+
+/*
+   After a losing trade, wait before
+   considering another entry.
+*/
+const LOSS_COOLDOWN_MS = 30 * 60 * 1000;
+
+/*
+   Automatically scan every minute.
+*/
+const SCAN_INTERVAL_MS = 60 * 1000;
+
+/*
+   Short history used for trend/momentum.
+*/
+const HISTORY_LIMIT = 30;
+
+
+/* =========================================================
+   ASSETS
+   ========================================================= */
+
+const ASSETS = [
+
+  ["BTC", "BTC-GBP", "bitcoin"],
+
+  ["ETH", "ETH-GBP", "ethereum"],
+
+  ["SOL", "SOL-GBP", "solana"],
+
+  ["LINK", "LINK-GBP", "chainlink"],
+
+  ["XRP", "XRP-GBP", "ripple"],
+
+  ["ADA", "ADA-GBP", "cardano"],
+
+  ["AVAX", "AVAX-GBP", "avalanche-2"],
+
+  ["DOT", "DOT-GBP", "polkadot"],
+
+  ["LTC", "LTC-GBP", "litecoin"],
+
+  ["AAVE", "AAVE-GBP", "aave"]
+
+];
+
+
+/* =========================================================
+   ACCOUNT
+   ========================================================= */
+
+function freshAccount() {
+
+  return {
+
+    version: VERSION,
+
+    cash: STARTING_BALANCE,
+
+    position: null,
+
+    trades: [],
+
+    starting: STARTING_BALANCE,
+
+    highWaterMark: STARTING_BALANCE,
+
+    maxDrawdown: 0,
+
+    history: {},
+
+    lastScan: null,
+
+    lastDecision: null,
+
+    lastLossTime: null
+
+  };
+
+}
+
+
+function loadAccount() {
+
+  try {
+
+    const saved =
+      JSON.parse(
+        localStorage.getItem("novaPaperV5")
+      );
+
+
+    if (
+      saved &&
+      typeof saved.cash === "number"
+    ) {
+
+      /*
+         Ensure fields introduced in later versions
+         exist even if storage is partially populated.
+      */
+
+      saved.version =
+        VERSION;
+
+      saved.trades =
+        Array.isArray(saved.trades)
+          ? saved.trades
+          : [];
+
+      saved.history =
+        saved.history &&
+        typeof saved.history === "object"
+          ? saved.history
+          : {};
+
+      saved.highWaterMark =
+        Number(saved.highWaterMark)
+        || STARTING_BALANCE;
+
+      saved.maxDrawdown =
+        Number(saved.maxDrawdown)
+        || 0;
+
+      return saved;
+
+    }
+
+  } catch (error) {
+
+    console.warn(
+      "Could not load saved account",
+      error
+    );
+
+  }
+
+
+  return freshAccount();
+
+}
+
+
+let state =
+  loadAccount();
+
+
+let scanInProgress =
+  false;
+
+
+let nextScanAt =
+  Date.now() +
+  SCAN_INTERVAL_MS;
+
+
+/* =========================================================
+   STORAGE
+   ========================================================= */
+
+function saveAccount() {
+
+  try {
+
+    localStorage.setItem(
+      "novaPaperV5",
+      JSON.stringify(state)
+    );
+
+  } catch (error) {
+
+    console.warn(
+      "Could not save paper account",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   FORMATTING
+   ========================================================= */
+
+function money(value) {
+
+  return "£" +
+    Number(value || 0)
+      .toFixed(2);
+
+}
+
+
+function percentage(value) {
+
+  return (
+    Number(value || 0) *
+    100
+  ).toFixed(2) +
+    "%";
+
+}
+
+
+function formatPrice(value) {
+
+  const n =
+    Number(value || 0);
+
+
+  if (n < 0.1) {
+
+    return n.toFixed(5);
+
+  }
+
+
+  if (n < 10) {
+
+    return n.toFixed(4);
+
+  }
+
+
+  return n.toFixed(2);
+
+}
+
+
+function escapeHtml(value) {
+
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+
+}
+
+
+/* =========================================================
+   NUMERIC HELPERS
+   ========================================================= */
+
+function clamp(
+  value,
+  min,
+  max
+) {
+
+  return Math.max(
+    min,
+    Math.min(
+      max,
+      value
+    )
+  );
+
+}
+
+
+function average(values) {
+
+  if (!values.length) {
+
+    return 0;
+
+  }
+
+
+  return values.reduce(
+    (a, b) => a + b,
+    0
+  ) / values.length;
+
+}
+
+
+/* =========================================================
+   MARKET DATA
+   ========================================================= */
+
+/*
+   Primary source:
+   Coinbase Exchange.
+
+   XRP and AVAX use CoinGecko fallback because the original
+   Coinbase GBP stats endpoint was returning errors for them.
+
+   CoinGecko is also available as a fallback if Coinbase fails.
+*/
+
+
+async function fetchCoinbaseStats(pair) {
+
+  const url =
+    "https://api.exchange.coinbase.com/products/" +
+    encodeURIComponent(pair) +
+    "/stats";
+
+
+  const response =
+    await fetch(
+      url,
+      {
+        cache: "no-store"
+      }
+    );
+
+
+  if (!response.ok) {
+
+    throw new Error(
+      "Coinbase HTTP " +
+      response.status
+    );
+
+  }
+
+
+  const data =
+    await response.json();
+
+
+  if (
+    !data.last ||
+    !data.open ||
+    !data.high ||
+    !data.low
+  ) {
+
+    throw new Error(
+      "Incomplete Coinbase data"
+    );
+
+  }
+
+
+  return {
+
+    price:
+      Number(data.last),
+
+    open:
+      Number(data.open),
+
+    high:
+      Number(data.high),
+
+    low:
+      Number(data.low),
+
+    volume:
+      Number(data.volume || 0),
+
+    source:
+      "Coinbase",
+
+    quality:
+      "LIVE"
+
+  };
+
+}
+
+
+async function fetchCoinGeckoStats(
+  coinId
+) {
+
+  const url =
+    "https://api.coingecko.com/api/v3/coins/markets" +
+    "?vs_currency=gbp" +
+    "&ids=" +
+    encodeURIComponent(coinId) +
+    "&price_change_percentage=24h";
+
+
+  const response =
+    await fetch(
+      url,
+      {
+        cache: "no-store"
+      }
+    );
+
+
+  if (!response.ok) {
+
+    throw new Error(
+      "CoinGecko HTTP " +
+      response.status
+    );
+
+  }
+
+
+  const data =
+    await response.json();
+
+
+  if (
+    !Array.isArray(data) ||
+    !data.length
+  ) {
+
+    throw new Error(
+      "CoinGecko returned no data"
+    );
+
+  }
+
+
+  const coin =
+    data[0];
+
+
+  const price =
+    Number(
+      coin.current_price
+    );
+
+
+  if (!price) {
+
+    throw new Error(
+      "No GBP price returned"
+    );
+
+  }
+
+
+  const change24h =
+    Number(
+      coin.price_change_percentage_24h
+      || 0
+    ) / 100;
+
+
+  let open =
+    price;
+
+
+  if (
+    change24h > -0.999
+  ) {
+
+    open =
+      price /
+      (1 + change24h);
+
+  }
+
+
+  return {
+
+    price:
+
+      price,
+
+    open:
+
+      open,
+
+    high:
+
+      Number(
+        coin.high_24h ||
+        price
+      ),
+
+    low:
+
+      Number(
+        coin.low_24h ||
+        price
+      ),
+
+    volume:
+
+      Number(
+        coin.total_volume ||
+        0
+      ),
+
+    source:
+
+      "CoinGecko",
+
+    quality:
+
+      "FALLBACK"
+
+  };
+
+}
+
+
+/* =========================================================
+   SMART MARKET FETCH
+   ========================================================= */
+
+async function getMarketStats(
+  asset
+) {
+
+  const name =
+    asset[0];
+
+  const pair =
+    asset[1];
+
+  const coinId =
+    asset[2];
+
+
+  /*
+     Try Coinbase first for every asset.
+
+     XRP and AVAX will automatically fall back
+     if Coinbase rejects the pair.
+  */
+
+  try {
+
+    const data =
+      await fetchCoinbaseStats(
+        pair
+      );
+
+
+    return {
+
+      pair:
+        pair,
+
+      name:
+        name,
+
+      ...data
+
+    };
+
+  } catch (coinbaseError) {
+
+    console.warn(
+      name +
+      " Coinbase failed:",
+      coinbaseError.message
+    );
+
+  }
+
+
+  /*
+     Fallback.
+  */
+
+  try {
+
+    const data =
+      await fetchCoinGeckoStats(
+        coinId
+      );
+
+
+    return {
+
+      pair:
+        pair,
+
+      name:
+        name,
+
+      ...data
+
+    };
+
+  } catch (fallbackError) {
+
+    throw new Error(
+      "Primary + fallback failed: " +
+      fallbackError.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   PRICE HISTORY
+   ========================================================= */
+
+function recordPrice(
+  name,
+  price
+) {
+
+  if (
+    !state.history[name]
+  ) {
+
+    state.history[name] = [];
+
+  }
+
+
+  state.history[name].push({
+
+    time:
+      Date.now(),
+
+    price:
+      price
+
+  });
+
+
+  /*
+     Keep only recent history.
+  */
+
+  if (
+    state.history[name].length >
+    HISTORY_LIMIT
+  ) {
+
+    state.history[name] =
+      state.history[name].slice(
+        -HISTORY_LIMIT
+      );
+
+  }
+
+}
+
+
+/* =========================================================
+   MOMENTUM
+   ========================================================= */
+
+function calculateMomentum(
+  name,
+  currentPrice
+) {
+
+  const history =
+    state.history[name]
+    || [];
+
+
+  if (
+    history.length < 3
+  ) {
+
+    return 0;
+
+  }
+
+
+  const prices =
+    history.map(
+      item => item.price
+    );
+
+
+  const recent =
+    prices.slice(
+      -3
+    );
+
+
+  const older =
+    prices.slice(
+      0,
+      Math.max(
+        1,
+        prices.length - 3
+      )
+    );
+
+
+  const shortBase =
+    recent[0];
+
+
+  const longBase =
+    older[0];
+
+
+  const shortMomentum =
+    shortBase > 0
+      ? currentPrice /
+        shortBase -
+        1
+      : 0;
+
+
+  const broaderMomentum =
+    longBase > 0
+      ? currentPrice /
+        longBase -
+        1
+      : 0;
+
+
+  /*
+     Blend short and broader momentum.
+  */
+
+  return (
+    shortMomentum * 0.60 +
+    broaderMomentum * 0.40
+  );
+
+}
+
+
+/* =========================================================
+   TREND
+   ========================================================= */
+
+function calculateTrend(
+  name,
+  currentPrice
+) {
+
+  const history =
+    state.history[name]
+    || [];
+
+
+  if (
+    history.length < 5
+  ) {
+
+    return {
+
+      value:
+        0,
+
+      label:
+        "NEW"
+
+    };
+
+  }
+
+
+  const prices =
+    history.map(
+      item => item.price
+    );
+
+
+  const recent =
+    prices.slice(
+      -5
+    );
+
+
+  const earlier =
+    prices.slice(
+      -10,
+      -5
+    );
+
+
+  if (
+    !earlier.length
+  ) {
+
+    return {
+
+      value:
+        0,
+
+      label:
+        "NEW"
+
+    };
+
+  }
+
+
+  const recentAverage =
+    average(
+      recent
+    );
+
+
+  const earlierAverage =
+    average(
+      earlier
+    );
+
+
+  const value =
+    earlierAverage > 0
+      ? recentAverage /
+        earlierAverage -
+        1
+      : 0;
+
+
+  let label =
+    "FLAT";
+
+
+  if (
+    value > 0.006
+  ) {
+
+    label =
+      "UP";
+
+  }
+
+
+  if (
+    value < -0.006
+  ) {
+
+    label =
+      "DOWN";
+
+  }
+
+
+  return {
+
+    value:
+      value,
+
+    label:
+      label
+
+  };
+
+}
+
+
+/* =========================================================
+   VOLATILITY
+   ========================================================= */
+
+function calculateVolatility(
+  stats
+) {
+
+  const dailyRange =
+    stats.high -
+    stats.low;
+
+
+  if (
+    stats.price <= 0
+  ) {
+
+    return 0;
+
+  }
+
+
+  return (
+    dailyRange /
+    stats.price
+  );
+
+}
+
+
+/* =========================================================
+   MARKET REGIME
+   ========================================================= */
+
+function calculateMarketRegime(
+  btc
+) {
+
+  if (!btc) {
+
+    return {
+
+      regime:
+        "UNKNOWN",
+
+      confidence:
+        0,
+
+      reason:
+        "BTC data unavailable."
+
+    };
+
+  }
+
+
+  const btcReturn =
+    btc.stats.price /
+    btc.stats.open -
+    1;
+
+
+  const trend =
+    btc.trend.value;
+
+
+  let regime =
+    "NEUTRAL";
+
+
+  let confidence =
+    50;
+
+
+  if (
+    btcReturn > 0.015 &&
+    trend >= 0
+  ) {
+
+    regime =
+      "BULLISH";
+
+    confidence =
+      clamp(
+        65 +
+        btcReturn * 300 +
+        trend * 300,
+        50,
+        95
+      );
+
+  } else if (
+    btcReturn < -0.015 &&
+    trend <= 0
+  ) {
+
+    regime =
+      "BEARISH";
+
+    confidence =
+      clamp(
+        65 +
+        Math.abs(btcReturn) * 300 +
+        Math.abs(trend) * 300,
+        50,
+        95
+      );
+
+  } else {
+
+    regime =
+      "NEUTRAL";
+
+    confidence =
+      50;
+
+  }
+
+
+  let reason;
+
+
+  if (
+    regime === "BULLISH"
+  ) {
+
+    reason =
+      "BTC is showing positive 24h performance with supportive short-term trend conditions.";
+
+  } else if (
+    regime === "BEARISH"
+  ) {
+
+    reason =
+      "BTC is weak and trend conditions are negative. Nova will require stronger setups.";
+
+  } else {
+
+    reason =
+      "BTC conditions are mixed. Nova will be selective and avoid forcing trades.";
+
+  }
+
+
+  return {
+
+    regime:
+      regime,
+
+    confidence:
+      Math.round(confidence),
+
+    reason:
+      reason
+
+  };
+
+}
+
+
+/* =========================================================
+   SCORE ENGINE
+   ========================================================= */
+
+function calculateScore(
+  item,
+  btcReturn,
+  regime
+) {
+
+  const s =
+    item.stats;
+
+
+  const return24h =
+    s.price /
+    s.open -
+    1;
+
+
+  const range =
+    s.high -
+    s.low;
+
+
+  let rangePosition =
+    0.5;
+
+
+  if (
+    range > 0
+  ) {
+
+    rangePosition =
+      (
+        s.price -
+        s.low
+      ) /
+      range;
+
+  }
+
+
+  const relativeStrength =
+    return24h -
+    btcReturn;
+
+
+  const momentum =
+    item.momentum;
+
+
+  const trend =
+    item.trend.value;
+
+
+  const volatility =
+    item.volatility;
+
+
+  /*
+     Start neutral.
+  */
+
+  let score =
+    50;
+
+
+  /*
+     24h momentum:
+     maximum contribution ±15.
+  */
+
+  score +=
+    clamp(
+      return24h * 300,
+      -15,
+      15
+    );
+
+
+  /*
+     Short-term momentum:
+     maximum contribution ±12.
+  */
+
+  score +=
+    clamp(
+      momentum * 500,
+      -12,
+      12
+    );
+
+
+  /*
+     Trend:
+     maximum contribution ±12.
+  */
+
+  score +=
+    clamp(
+      trend * 600,
+      -12,
+      12
+    );
+
+
+  /*
+     Relative strength versus BTC:
+     maximum contribution ±15.
+  */
+
+  score +=
+    clamp(
+      relativeStrength * 300,
+      -15,
+      15
+    );
+
+
+  /*
+     Position in daily range.
+
+     Being high in the range is useful,
+     but we don't want to chase an asset
+     that is already extremely extended.
+  */
+
+  score +=
+    (
+      rangePosition -
+      0.5
+    ) * 10;
+
+
+  /*
+     Volatility penalty.
+
+     Extremely high volatility makes the
+     setup less attractive for a £100 account.
+  */
+
+  if (
+    volatility > 0.15
+  ) {
+
+    score -= 10;
+
+  } else if (
+    volatility > 0.10
+  ) {
+
+    score -= 5;
+
+  }
+
+
+  /*
+     Avoid chasing large daily pumps.
+  */
+
+  if (
+    return24h > 0.08
+  ) {
+
+    score -= 12;
+
+  }
+
+
+  if (
+    return24h > 0.12
+  ) {
+
+    score -= 8;
+
+  }
+
+
+  /*
+     Severe weakness penalty.
+  */
+
+  if (
+    return24h < -0.08
+  ) {
+
+    score -= 8;
+
+  }
+
+
+  /*
+     Market regime adjustment.
+  */
+
+  if (
+    regime === "BULLISH"
+  ) {
+
+    score += 5;
+
+  }
+
+
+  if (
+    regime === "BEARISH"
+  ) {
+
+    score -= 12;
+
+  }
+
+
+  /*
+     Don't allow scores outside 0-100.
+  */
+
+  score =
+    Math.round(
+      clamp(
+        score,
+        0,
+        100
+      )
+    );
+
+
+  /*
+     Determine signal.
+  */
+
+  let signal =
+    "WAIT";
+
+
+  if (
+    score >= MIN_ENTRY_SCORE
+  ) {
+
+    signal =
+      "BUY";
+
+  } else if (
+    score < 35
+  ) {
+
+    signal =
+      "WEAK";
+
+  }
+
+
+  return {
+
+    return24h:
+      return24h,
+
+    rangePosition:
+      rangePosition,
+
+    relativeStrength:
+      relativeStrength,
+
+    score:
+      score,
+
+    signal:
+      signal
+
+  };
+
+}
+
+
+/* =========================================================
+   COOLDOWN
+   ========================================================= */
+
+function getCooldownRemaining() {
+
+  if (
+    !state.lastLossTime
+  ) {
+
+    return 0;
+
+  }
+
+
+  const elapsed =
+    Date.now() -
+    state.lastLossTime;
+
+
+  return Math.max(
+    0,
+    LOSS_COOLDOWN_MS -
+    elapsed
+  );
+
+}
+
+
+function canTrade() {
+
+  const cooldown =
+    getCooldownRemaining();
+
+
+  if (
+    cooldown > 0
+  ) {
+
+    return {
+
+      allowed:
+        false,
+
+      reason:
+        "Nova is cooling down after a losing trade."
+
+    };
+
+  }
+
+
+  const cutoff =
+    Date.now() -
+    24 * 60 * 60 * 1000;
+
+
+  const recentTrades =
+    state.trades.filter(
+      trade =>
+        trade.timestamp >=
+        cutoff &&
+        (
+          trade.side === "BUY" ||
+          trade.side === "SELL"
+        )
+    );
+
+
+  /*
+     Count completed SELLs as completed trades.
+  */
+
+  const completed =
+    recentTrades.filter(
+      trade =>
+        trade.side === "SELL"
+    );
+
+
+  if (
+    completed.length >=
+    MAX_TRADES_24H
+  ) {
+
+    return {
+
+      allowed:
+        false,
+
+      reason:
+        "24-hour trade limit reached."
+
+    };
+
+  }
+
+
+  return {
+
+    allowed:
+      true,
+
+    reason:
+      ""
+
+  };
+
+}
+
+
+/* =========================================================
+   POSITION VALUATION
+   ========================================================= */
+
+function getPositionValue(
+  market
+) {
+
+  if (
+    !state.position ||
+    !market
+  ) {
+
+    return 0;
+
+  }
+
+
+  return (
+    state.position.quantity *
+    market.stats.price
+  );
+
+}
+
+
+function calculateEquity(
+  markets = []
+) {
+
+  let equity =
+    state.cash;
+
+
+  if (
+    state.position
+  ) {
+
+    const market =
+      markets.find(
+        item =>
+          item.pair ===
+          state.position.pair
+      );
+
+
+    if (market) {
+
+      equity +=
+        getPositionValue(
+          market
+        );
+
+    } else {
+
+      /*
+         If current data isn't available,
+         use entry value as a conservative
+         temporary display.
+      */
+
+      equity +=
+        state.position.cost;
+
+    }
+
+  }
+
+
+  return equity;
+
+}
+
+
+/* =========================================================
+   DRAW DOWN
+   ========================================================= */
+
+function updateDrawdown(
+  equity
+) {
+
+  if (
+    equity >
+    state.highWaterMark
+  ) {
+
+    state.highWaterMark =
+      equity;
+
+  }
+
+
+  const drawdown =
+    state.highWaterMark > 0
+      ? (
+          equity /
+          state.highWaterMark
+        ) - 1
+      : 0;
+
+
+  const absoluteDrawdown =
+    Math.abs(
+      Math.min(
+        0,
+        drawdown
+      )
+    );
+
+
+  if (
+    absoluteDrawdown >
+    state.maxDrawdown
+  ) {
+
+    state.maxDrawdown =
+      absoluteDrawdown;
+
+  }
+
+}
+
+
+/* =========================================================
+   ENTRY
+   ========================================================= */
+
+function openPosition(
+  best
+) {
+
+  const allocation =
+    Math.min(
+
+      state.cash *
+      MAX_ALLOCATION,
+
+      MAX_POSITION_GBP,
+
+      state.cash
+
+    );
+
+
+  if (
+    allocation < 5
+  ) {
+
+    return false;
+
+  }
+
+
+  const fee =
+    allocation *
+    TRADING_FEE;
+
+
+  const quantity =
+    (
+      allocation -
+      fee
+    ) /
+    best.stats.price;
+
+
+  state.cash -=
+    allocation;
+
+
+  state.position = {
+
+    name:
+      best.name,
+
+    pair:
+      best.pair,
+
+    quantity:
+      quantity,
+
+    entry:
+      best.stats.price,
+
+    cost:
+      allocation,
+
+    entryFee:
+      fee,
+
+    highestPrice:
+      best.stats.price,
+
+    entryScore:
+      best.score,
+
+    entryTime:
+      Date.now(),
+
+    stopPrice:
+      best.stats.price *
+      (1 - BASE_STOP_LOSS),
+
+    targetPrice:
+      best.stats.price *
+      (1 + TAKE_PROFIT)
+
+  };
+
+
+  state.trades.unshift({
+
+    timestamp:
+      Date.now(),
+
+    time:
+      new Date()
+        .toLocaleString(),
+
+    side:
+      "BUY",
+
+    asset:
+      best.name,
+
+    pair:
+      best.pair,
+
+    price:
+      best.stats.price,
+
+    quantity:
+      quantity,
+
+    fee:
+      fee,
+
+    score:
+      best.score,
+
+    reason:
+      "Score " +
+      best.score +
+      "; 24h " +
+      percentage(best.return24h) +
+      "; BTC relative " +
+      percentage(best.relativeStrength) +
+      "; trend " +
+      best.trend.label
+
+  });
+
+
+  saveAccount();
+
+
+  setDecision(
+
+    "BUY",
+
+    "Nova selected " +
+    best.name +
+    " at " +
+    formatPrice(best.stats.price) +
+    " with a score of " +
+    best.score +
+    "/100."
+
+  );
+
+
+  document.getElementById(
+    "decisionDetails"
+  ).textContent =
+
+    "Entry confidence: " +
+    best.score +
+    "/100 • Allocation: " +
+    money(allocation) +
+    " • Stop: " +
+    formatPrice(
+      state.position.stopPrice
+    ) +
+    " • Target: " +
+    formatPrice(
+      state.position.targetPrice
+    );
+
+
+  return true;
+
+}
+
+
+/* =========================================================
+   POSITION MANAGEMENT
+   ========================================================= */
+
+function managePosition(
+  results
+) {
+
+  if (
+    !state.position
+  ) {
+
+    return false;
+
+  }
+
+
+  const current =
+    results.find(
+      item =>
+        item.pair ===
+        state.position.pair
+    );
+
+
+  if (!current) {
+
+    setDecision(
+
+      "HOLD",
+
+      "Position data temporarily unavailable. Nova is not making an exit decision from missing data."
+
+    );
+
+    return true;
+
+  }
+
+
+  const price =
+    current.stats.price;
+
+
+  const entry =
+    state.position.entry;
+
+
+  const currentReturn =
+    price /
+    entry -
+    1;
+
+
+  /*
+     Update highest price.
+  */
+
+  if (
+    price >
+    state.position.highestPrice
+  ) {
+
+    state.position.highestPrice =
+      price;
+
+  }
+
+
+  /*
+     Activate trailing protection
+     after the position reaches +2.5%.
+  */
+
+  if (
+    currentReturn >=
+    TRAILING_ACTIVATION
+  ) {
+
+    const trailingStop =
+      state.position.highestPrice *
+      (
+        1 -
+        TRAILING_DISTANCE
+      );
+
+
+    if (
+      trailingStop >
+      state.position.stopPrice
+    ) {
+
+      state.position.stopPrice =
+        trailingStop;
+
+    }
+
+  }
+
+
+  /*
+     Hard / trailing stop.
+  */
+
+  if (
+    price <=
+    state.position.stopPrice
+  ) {
+
+    closePosition(
+      current,
+      "stop / trailing protection"
+    );
+
+    return true;
+
+  }
+
+
+  /*
+     Profit target.
+  */
+
+  if (
+    price >=
+    state.position.targetPrice
+  ) {
+
+    closePosition(
+      current,
+      "take profit"
+    );
+
+    return true;
+
+  }
+
+
+  /*
+     If the score collapses,
+     exit rather than blindly holding.
+  */
+
+  if (
+    current.score < 30
+  ) {
+
+    closePosition(
+      current,
+      "signal deteriorated"
+    );
+
+    return true;
+
+  }
+
+
+  /*
+     If market becomes strongly bearish
+     and this asset loses relative strength,
+     become defensive.
+  */
+
+  if (
+    latestRegime === "BEARISH" &&
+    current.relativeStrength < -0.025 &&
+    current.score < 50
+  ) {
+
+    closePosition(
+      current,
+      "bearish market regime"
+    );
+
+    return true;
+
+  }
+
+
+  setDecision(
+
+    "HOLD",
+
+    "Holding " +
+    current.name +
+    ". Current return: " +
+    percentage(currentReturn) +
+    ". Score: " +
+    current.score +
+    "/100."
+
+  );
+
+
+  document.getElementById(
+    "decisionDetails"
+  ).textContent =
+
+    "Entry " +
+    formatPrice(entry) +
+    " • Current " +
+    formatPrice(price) +
+    " • Stop " +
+    formatPrice(
+      state.position.stopPrice
+    ) +
+    " • Target " +
+    formatPrice(
+      state.position.targetPrice
+    );
+
+
+  return true;
+
+}
+
+
+/* =========================================================
+   EXIT
+   ========================================================= */
+
+function closePosition(
+  market,
+  reason
+) {
+
+  if (
+    !state.position
+  ) {
+
+    return;
+
+  }
+
+
+  const exitPrice =
+    market.stats.price;
+
+
+  const quantity =
+    state.position.quantity;
+
+
+  const grossValue =
+    quantity *
+    exitPrice;
+
+
+  const exitFee =
+    grossValue *
+    TRADING_FEE;
+
+
+  const netSale =
+    grossValue -
+    exitFee;
+
+
+  const totalFees =
+    state.position.entryFee +
+    exitFee;
+
+
+  const netProfit =
+    netSale -
+    state.position.cost;
+
+
+  const returnPct =
+    state.position.cost > 0
+      ? netProfit /
+        state.position.cost
+      : 0;
+
+
+  const holdingTime =
+    Date.now() -
+    state.position.entryTime;
+
+
+  state.cash +=
+    netSale;
+
+
+  state.trades.unshift({
+
+    timestamp:
+      Date.now(),
+
+    time:
+      new Date()
+        .toLocaleString(),
+
+    side:
+      "SELL",
+
+    asset:
+      market.name,
+
+    pair:
+      market.pair,
+
+    price:
+      exitPrice,
+
+    quantity:
+      quantity,
+
+    fee:
+      exitFee,
+
+    totalFees:
+      totalFees,
+
+    pnl:
+      netProfit,
+
+    returnPct:
+      returnPct,
+
+    holdingMs:
+      holdingTime,
+
+    reason:
+      reason
+
+  });
+
+
+  if (
+    netProfit < 0
+  ) {
+
+    state.lastLossTime =
+      Date.now();
+
+  }
+
+
+  state.position =
+    null;
+
+
+  saveAccount();
+
+
+  setDecision(
+
+    "SELL",
+
+    "Nova closed " +
+    market.name +
+    ". " +
+    reason +
+    ". Net result: " +
+    money(netProfit) +
+    " (" +
+    percentage(returnPct) +
+    ")."
+
+  );
+
+
+  document.getElementById(
+    "decisionDetails"
+  ).textContent =
+
+    "Exit " +
+    formatPrice(exitPrice) +
+    " • Net P/L " +
+    money(netProfit) +
+    " • Total fees " +
+    money(totalFees);
+
+}
+
+
+/* =========================================================
+   DECISION ENGINE
+   ========================================================= */
+
+let latestRegime =
+  "UNKNOWN";
+
+
+function makeDecision(
+  results,
+  regime
+) {
+
+  /*
+     Position management takes priority.
+  */
+
+  if (
+    state.position
+  ) {
+
+    managePosition(
+      results
+    );
+
+    return;
+
+  }
+
+
+  /*
+     No position.
+  */
+
+  const tradePermission =
+    canTrade();
+
+
+  if (
+    !tradePermission.allowed
+  ) {
+
+    const best =
+      results[0];
+
+
+    setDecision(
+
+      "WAIT",
+
+      tradePermission.reason +
+      " Best current candidate: " +
+      best.name +
+      " (" +
+      best.score +
+      "/100)."
+
+    );
+
+    return;
+
+  }
+
+
+  /*
+     Never buy BTC in this experimental
+     altcoin strategy. BTC is the benchmark.
+  */
+
+  const candidates =
+    results.filter(
+      item =>
+        item.name !== "BTC"
+    );
+
+
+  if (
+    !candidates.length
+  ) {
+
+    setDecision(
+      "WAIT",
+      "No eligible altcoin data."
+    );
+
+    return;
+
+  }
+
+
+  const best =
+    candidates[0];
+
+
+  /*
+     Bearish regime requires a stronger setup.
+  */
+
+  let requiredScore =
+    MIN_ENTRY_SCORE;
+
+
+  if (
+    regime.regime ===
+    "BEARISH"
+  ) {
+
+    requiredScore =
+      82;
+
+  }
+
+
+  /*
+     If the candidate is extremely volatile,
+     demand a stronger score.
+  */
+
+  if (
+    best.volatility >
+    0.15
+  ) {
+
+    requiredScore += 4;
+
+  }
+
+
+  /*
+     Don't chase an extreme daily move.
+  */
+
+  if (
+    best.return24h >
+    0.10
+  ) {
+
+    setDecision(
+
+      "WAIT",
+
+      best.name +
+      " is moving too aggressively. Nova will not chase a major pump."
+
+    );
+
+    return;
+
+  }
+
+
+  if (
+    best.score >=
+    requiredScore
+  ) {
+
+    openPosition(
+      best
+    );
+
+  } else {
+
+    setDecision(
+
+      "WAIT",
+
+      "Best candidate is " +
+      best.name +
+      " with a score of " +
+      best.score +
+      "/100. Minimum required: " +
+      requiredScore +
+      "/100."
+
+    );
+
+
+    document.getElementById(
+      "decisionDetails"
+    ).textContent =
+
+      "Nova is deliberately waiting for stronger confirmation. " +
+      "No trade is forced.";
+
+  }
+
+}
+
+
+/* =========================================================
+   SCAN
+   ========================================================= */
+
+async function scan() {
+
+  if (
+    scanInProgress
+  ) {
+
+    return;
+
+  }
+
+
+  scanInProgress =
+    true;
+
+
+  const button =
+    document.getElementById(
+      "scanBtn"
+    );
+
+
+  button.disabled =
+    true;
+
+
+  document.getElementById(
+    "status"
+  ).textContent =
+    "Scanning live public market data…";
+
+
+  try {
+
+    const results = [];
+
+
+    /*
+       Fetch sequentially to reduce the
+       chance of hitting public API limits.
+    */
+
+    for (
+      const asset of ASSETS
+    ) {
+
+      try {
+
+        const stats =
+          await getMarketStats(
+            asset
+          );
+
+
+        recordPrice(
+          asset[0],
+          stats.price
+        );
+
+
+        const item = {
+
+          name:
+            asset[0],
+
+          pair:
+            asset[1],
+
+          coinId:
+            asset[2],
+
+          stats:
+            stats,
+
+          momentum:
+            calculateMomentum(
+              asset[0],
+              stats.price
+            ),
+
+          trend:
+            calculateTrend(
+              asset[0],
+              stats.price
+            ),
+
+          volatility:
+            calculateVolatility(
+              stats
+            )
+
+        };
+
+
+        results.push(
+          item
+        );
+
+
+      } catch (error) {
+
+        results.push({
+
+          name:
+            asset[0],
+
+          pair:
+            asset[1],
+
+          error:
+            error.message
+
+        });
+
+      }
+
+    }
+
+
+    const usable =
+      results.filter(
+        item =>
+          !item.error
+      );
+
+
+    if (
+      !usable.length
+    ) {
+
+      throw new Error(
+        "No public market data responded."
+      );
+
+    }
+
+
+    /*
+       BTC benchmark.
+    */
+
+    const btc =
+      usable.find(
+        item =>
+          item.name ===
+          "BTC"
+      );
+
+
+    const btcReturn =
+      btc
+        ? btc.stats.price /
+          btc.stats.open -
+          1
+        : 0;
+
+
+    /*
+       Market regime.
+    */
+
+    const regime =
+      calculateMarketRegime(
+        btc
+      );
+
+
+    latestRegime =
+      regime.regime;
+
+
+    renderRegime(
+      regime
+    );
+
+
+    /*
+       Score every usable market.
+    */
+
+    for (
+      const item of usable
+    ) {
+
+      const score =
+        calculateScore(
+          item,
+          btcReturn,
+          regime.regime
+        );
+
+
+      Object.assign(
+        item,
+        score
+      );
+
+    }
+
+
+    /*
+       Strongest first.
+    */
+
+    usable.sort(
+      (a, b) =>
+        b.score -
+        a.score
+    );
+
+
+    renderMarkets(
+      results
+    );
+
+
+    makeDecision(
+      usable,
+      regime
+    );
+
+
+    render(
+      usable
+    );
+
+
+    state.lastScan =
+      Date.now();
+
+
+    saveAccount();
+
+
+    nextScanAt =
+      Date.now() +
+      SCAN_INTERVAL_MS;
+
+
+    document.getElementById(
+      "status"
+    ).textContent =
+
+      "Scan complete • " +
+      new Date()
+        .toLocaleTimeString() +
+      " • " +
+      usable.length +
+      "/" +
+      ASSETS.length +
+      " assets available";
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    document.getElementById(
+      "status"
+    ).textContent =
+      "Scan failed: " +
+      error.message;
+
+
+    setDecision(
+
+      "WAIT",
+
+      "Nova could not validate enough live market data. No trade was made."
+
+    );
+
+  }
+
+
+  button.disabled =
+    false;
+
+
+  scanInProgress =
+    false;
+
+}
+
+
+/* =========================================================
+   MARKET TABLE
+   ========================================================= */
+
+function renderMarkets(
+  results
+) {
+
+  const table =
+    document.getElementById(
+      "markets"
+    );
+
+
+  table.innerHTML =
+    results.map(
+      item => {
+
+        if (
+          item.error
+        ) {
+
+          return `
+
+            <tr>
+
+              <td>
+                <b>${escapeHtml(item.name)}</b>
+              </td>
+
+              <td colspan="9"
+                  class="err">
+
+                Unavailable:
+                ${escapeHtml(item.error)}
+
+              </td>
+
+              <td class="err">
+                ERROR
+              </td>
+
+            </tr>
+
+          `;
+
+        }
+
+
+        let signal =
+          item.signal ||
+          "WAIT";
+
+
+        if (
+          item.name ===
+          "BTC"
+        ) {
+
+          signal =
+            "BENCHMARK";
+
+        }
+
+
+        const trendClass =
+          item.trend.label ===
+          "UP"
+            ? "good"
+            : item.trend.label ===
+              "DOWN"
+              ? "bad"
+              : "wait";
+
+
+        const dataClass =
+          item.stats.quality ===
+          "LIVE"
+            ? "good"
+            : "wait";
+
+
+        const signalClass =
+          signal === "BUY"
+            ? "good"
+            : signal === "WEAK"
+              ? "bad"
+              : "wait";
+
+
+        return `
+
+          <tr>
+
+            <td>
+              <b>
+                ${escapeHtml(item.name)}
+              </b>
+            </td>
+
+            <td>
+              ${formatPrice(
+                item.stats.price
+              )}
+            </td>
+
+            <td class="${
+              item.return24h >= 0
+                ? "good"
+                : "bad"
+            }">
+
+              ${percentage(
+                item.return24h
+              )}
+
+            </td>
+
+            <td class="${trendClass}">
+              ${item.trend.label}
+            </td>
+
+            <td class="${
+              item.momentum >= 0
+                ? "good"
+                : "bad"
+            }">
+
+              ${percentage(
+                item.momentum
+              )}
+
+            </td>
+
+            <td class="${
+              item.relativeStrength >= 0
+                ? "good"
+                : "bad"
+            }">
+
+              ${percentage(
+                item.relativeStrength
+              )}
+
+            </td>
+
+            <td>
+
+              ${
+                (
+                  item.rangePosition *
+                  100
+                ).toFixed(0)
+              }%
+
+            </td>
+
+            <td>
+
+              ${
+                (
+                  item.volatility *
+                  100
+                ).toFixed(1)
+              }%
+
+            </td>
+
+            <td>
+              <b>${item.score}</b>
+            </td>
+
+            <td class="${signalClass}">
+              <b>${signal}</b>
+            </td>
+
+            <td class="${dataClass}">
+              ${item.stats.quality}
+            </td>
+
+          </tr>
+
+        `;
+
+      }
+    ).join("");
+
+}
+
+
+/* =========================================================
+   REGIME DISPLAY
+   ========================================================= */
+
+function renderRegime(
+  regime
+) {
+
+  const badge =
+    document.getElementById(
+      "regimeBadge"
+    );
+
+
+  badge.textContent =
+    "MARKET: " +
+    regime.regime;
+
+
+  badge.className =
+    "badge " +
+    (
+      regime.regime ===
+      "BULLISH"
+        ? "good"
+        : regime.regime ===
+          "BEARISH"
+          ? "bad"
+          : "wait"
+    );
+
+
+  document.getElementById(
+    "regimeTitle"
+  ).textContent =
+    regime.regime;
+
+
+  document.getElementById(
+    "regimeReason"
+  ).textContent =
+    regime.reason;
+
+
+  document.getElementById(
+    "regimeConfidence"
+  ).textContent =
+    regime.confidence +
+    "% confidence";
+
+
+  document.getElementById(
+    "regimeProgress"
+  ).style.width =
+    regime.confidence +
+    "%";
+
+}
+
+
+/* =========================================================
+   ACCOUNT RENDER
+   ========================================================= */
+
+function render(
+  markets = []
+) {
+
+  const equity =
+    calculateEquity(
+      markets
+    );
+
+
+  const invested =
+    state.position
+      ? getPositionValue(
+          markets.find(
+            item =>
+              item.pair ===
+              state.position.pair
+          )
+        )
+      : 0;
+
+
+  const profit =
+    equity -
+    state.starting;
+
+
+  const profitPct =
+    state.starting > 0
+      ? profit /
+        state.starting
+      : 0;
+
+
+  updateDrawdown(
+    equity
+  );
+
+
+  document.getElementById(
+    "equity"
+  ).textContent =
+    money(equity);
+
+
+  document.getElementById(
+    "equitySub"
+  ).textContent =
+    "Starting " +
+    money(state.starting);
+
+
+  document.getElementById(
+    "cash"
+  ).textContent =
+    money(state.cash);
+
+
+  document.getElementById(
+    "investedSub"
+  ).textContent =
+    "Invested " +
+    money(invested);
+
+
+  document.getElementById(
+    "pnl"
+  ).textContent =
+    money(profit);
+
+
+  document.getElementById(
+    "pnlPercent"
+  ).textContent =
+    percentage(profitPct);
+
+
+  document.getElementById(
+    "pnl"
+  ).className =
+    "metric " +
+    (
+      profit >= 0
+        ? "good"
+        : "bad"
+    );
+
+
+  document.getElementById(
+    "pos"
+  ).textContent =
+    state.position
+      ? state.position.name
+      : "NONE";
+
+
+  document.getElementById(
+    "positionSub"
+  ).textContent =
+    state.position
+      ? money(
+          state.position.cost
+        ) +
+        " allocated"
+      : "No open position";
+
+
+  renderPosition(
+    markets
+  );
+
+
+  renderStatistics();
+
+
+  renderRisk();
+
+}
+
+
+/* =========================================================
+   POSITION DISPLAY
+   ========================================================= */
+
+function renderPosition(
+  markets
+) {
+
+  const element =
+    document.getElementById(
+      "position"
+    );
+
+
+  if (
+    !state.position
+  ) {
+
+    element.textContent =
+      "None";
+
+    return;
+
+  }
+
+
+  const market =
+    markets.find(
+      item =>
+        item.pair ===
+        state.position.pair
+    );
+
+
+  const currentPrice =
+    market
+      ? market.stats.price
+      : state.position.entry;
+
+
+  const currentValue =
+    state.position.quantity *
+    currentPrice;
+
+
+  const currentPnl =
+    currentValue -
+    state.position.cost;
+
+
+  const currentReturn =
+    state.position.cost > 0
+      ? currentPnl /
+        state.position.cost
+      : 0;
+
+
+  const holdMinutes =
+    (
+      Date.now() -
+      state.position.entryTime
+    ) /
+    60000;
+
+
+  element.innerHTML = `
+
+    <b>${escapeHtml(
+      state.position.name
+    )}</b>
+
+    <br><br>
+
+    Entry:
+    ${formatPrice(
+      state.position.entry
+    )}
+
+    <br>
+
+    Current:
+    ${formatPrice(
+      currentPrice
+    )}
+
+    <br>
+
+    Units:
+    ${state.position.quantity.toFixed(7)}
+
+    <br>
+
+    Capital:
+    ${money(
+      state.position.cost
+    )}
+
+    <br>
+
+    Current value:
+    ${money(
+      currentValue
+    )}
+
+    <br>
+
+    Unrealised P/L:
+    <span class="${
+      currentPnl >= 0
+        ? "good"
+        : "bad"
+    }">
+
+      ${money(currentPnl)}
+      (${percentage(currentReturn)})
+
+    </span>
+
+    <br>
+
+    Stop:
+    ${formatPrice(
+      state.position.stopPrice
+    )}
+
+    <br>
+
+    Target:
+    ${formatPrice(
+      state.position.targetPrice
+    )}
+
+    <br>
+
+    Highest:
+    ${formatPrice(
+      state.position.highestPrice
+    )}
+
+    <br>
+
+    Entry score:
+    ${state.position.entryScore}/100
+
+    <br>
+
+    Holding:
+    ${holdMinutes.toFixed(0)} minutes
+
+  `;
+
+}
+
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
+
+function renderStatistics() {
+
+  const sells =
+    state.trades.filter(
+      trade =>
+        trade.side ===
+        "SELL"
+    );
+
+
+  const wins =
+    sells.filter(
+      trade =>
+        Number(trade.pnl) > 0
+    );
+
+
+  const realized =
+    sells.reduce(
+      (sum, trade) =>
+        sum +
+        Number(
+          trade.pnl || 0
+        ),
+      0
+    );
+
+
+  const fees =
+    state.trades.reduce(
+      (sum, trade) =>
+        sum +
+        Number(
+          trade.fee || 0
+        ),
+      0
+    );
+
+
+  const best =
+    sells.length
+      ? Math.max(
+          ...sells.map(
+            trade =>
+              Number(
+                trade.pnl || 0
+              )
+          )
+        )
+      : 0;
+
+
+  const worst =
+    sells.length
+      ? Math.min(
+          ...sells.map(
+            trade =>
+              Number(
+                trade.pnl || 0
+              )
+          )
+        )
+      : 0;
+
+
+  const winRate =
+    sells.length
+      ? wins.length /
+        sells.length
+      : 0;
+
+
+  document.getElementById(
+    "totalTrades"
+  ).textContent =
+    sells.length;
+
+
+  document.getElementById(
+    "winRate"
+  ).textContent =
+    percentage(winRate);
+
+
+  document.getElementById(
+    "realizedPnl"
+  ).textContent =
+    money(realized);
+
+
+  document.getElementById(
+    "fees"
+  ).textContent =
+    money(fees);
+
+
+  document.getElementById(
+    "bestTrade"
+  ).textContent =
+    money(best);
+
+
+  document.getElementById(
+    "worstTrade"
+  ).textContent =
+    money(worst);
+
+}
+
+
+/* =========================================================
+   RISK DISPLAY
+   ========================================================= */
+
+function renderRisk() {
+
+  const cooldown =
+    getCooldownRemaining();
+
+
+  const equity =
+    calculateEquity([]);
+
+
+  const currentDrawdown =
+    state.highWaterMark > 0
+      ? Math.min(
+          0,
+          equity /
+          state.highWaterMark -
+          1
+        )
+      : 0;
+
+
+  document.getElementById(
+    "drawdown"
+  ).textContent =
+    percentage(
+      Math.abs(
+        currentDrawdown
+      )
+    );
+
+
+  document.getElementById(
+    "maxDrawdown"
+  ).textContent =
+    percentage(
+      state.maxDrawdown
+    );
+
+
+  const cooldownElement =
+    document.getElementById(
+      "cooldown"
+    );
+
+
+  if (
+    cooldown <= 0
+  ) {
+
+    cooldownElement.textContent =
+      "READY";
+
+    cooldownElement.className =
+      "stat-value good";
+
+  } else {
+
+    const minutes =
+      Math.ceil(
+        cooldown /
+        60000
+      );
+
+
+    cooldownElement.textContent =
+      minutes +
+      " min";
+
+
+    cooldownElement.className =
+      "stat-value wait";
+
+  }
+
+}
+
+
+/* =========================================================
+   DECISION DISPLAY
+   ========================================================= */
+
+function setDecision(
+  decision,
+  reason
+) {
+
+  const element =
+    document.getElementById(
+      "decision"
+    );
+
+
+  element.textContent =
+    decision;
+
+
+  element.className =
+    "decision " +
+    (
+      decision === "BUY"
+        ? "good"
+        : decision === "SELL"
+          ? "bad"
+          : "wait"
+    );
+
+
+  document.getElementById(
+    "reason"
+  ).textContent =
+    reason;
+
+}
+
+
+/* =========================================================
+   TRADE LOG
+   ========================================================= */
+
+function renderLog() {
+
+  const log =
+    document.getElementById(
+      "log"
+    );
+
+
+  if (
+    !state.trades.length
+  ) {
+
+    log.textContent =
+      "No trades yet.";
+
+    return;
+
+  }
+
+
+  log.textContent =
+    state.trades
+      .slice(
+        0,
+        100
+      )
+      .map(
+        trade => {
+
+          let line =
+            trade.time +
+            " | " +
+            trade.side +
+            " " +
+            trade.asset +
+            " | " +
+            formatPrice(
+              trade.price
+            );
+
+
+          if (
+            trade.side ===
+            "SELL"
+          ) {
+
+            line +=
+              " | P/L " +
+              money(
+                trade.pnl
+              ) +
+              " | " +
+              (
+                trade.reason ||
+                ""
+              );
+
+          } else {
+
+            line +=
+              " | Score " +
+              trade.score +
+              " | " +
+              (
+                trade.reason ||
+                ""
+              );
+
+          }
+
+
+          return line;
+
+        }
+      )
+      .join("\n");
+
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+function resetPaper() {
+
+  const confirmed =
+    confirm(
+      "Reset Nova Paper Trader to £100?\n\n" +
+      "This will erase the current paper account, " +
+      "trade history and price history."
+    );
+
+
+  if (
+    !confirmed
+  ) {
+
+    return;
+
+  }
+
+
+  state =
+    freshAccount();
+
+
+  saveAccount();
+
+
+  render([]);
+
+
+  renderLog();
+
+
+  document.getElementById(
+    "markets"
+  ).innerHTML = `
+
+    <tr>
+
+      <td colspan="11">
+
+        £100 reset successfully.
+        Press SCAN MARKET NOW.
+
+      </td>
+
+    </tr>
+
+  `;
+
+
+  setDecision(
+
+    "WAIT",
+
+    "Paper account reset to £100. No real funds are affected."
+
+  );
+
+
+  document.getElementById(
+    "decisionDetails"
+  ).textContent =
+    "Fresh strategy state created.";
+
+
+  document.getElementById(
+    "status"
+  ).textContent =
+    "£100 reset successfully.";
+
+
+  nextScanAt =
+    Date.now() +
+    SCAN_INTERVAL_MS;
+
+}
+
+
+/* =========================================================
+   COUNTDOWN
+   ========================================================= */
+
+function updateCountdown() {
+
+  const element =
+    document.getElementById(
+      "countdown"
+    );
+
+
+  if (
+    scanInProgress
+  ) {
+
+    element.textContent =
+      "SCANNING";
+
+    return;
+
+  }
+
+
+  const remaining =
+    Math.max(
+      0,
+      nextScanAt -
+      Date.now()
+    );
+
+
+  const seconds =
+    Math.ceil(
+      remaining /
+      1000
+    );
+
+
+  element.textContent =
+    seconds +
+    " sec";
+
+}
+
+
+/* =========================================================
+   INITIALISE
+   ========================================================= */
+
+render(
+  []
+);
+
+renderLog();
+
+
+/*
+   Perform the first scan automatically.
+*/
+
+scan();
+
+
+/*
+   Automatic scan every minute.
+
+   scan() has its own overlap protection,
+   so a slow API response cannot create
+   simultaneous scans.
+*/
+
+setInterval(
+  () => {
+
+    scan();
+
+  },
+  SCAN_INTERVAL_MS
+);
+
+
+/*
+   UI refresh.
+
+   This does not make API calls.
+*/
+
+setInterval(
+  () => {
+
+    updateCountdown();
+
+    renderRisk();
+
+  },
+  1000
+);
+
+
+</script>
+
+</body>
+</html>
