@@ -1,0 +1,1511 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova Paper Trader v4</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #0b0d12;
+  color: #eef1f7;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.wrap {
+  max-width: 1050px;
+  margin: auto;
+  padding: 16px;
+}
+
+.card {
+  background: #151820;
+  border: 1px solid #2b303b;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 12px 0;
+}
+
+h1 {
+  font-size: 32px;
+  margin: 0 0 5px;
+}
+
+h2 {
+  margin: 0 0 8px;
+}
+
+.muted {
+  color: #9da5b5;
+}
+
+.small {
+  font-size: 12px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.metric {
+  font-size: 25px;
+  font-weight: 800;
+}
+
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 15px;
+  margin: 4px 6px 4px 0;
+  font-weight: 800;
+  background: #e9edf3;
+  color: #111;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th,
+td {
+  padding: 9px;
+  border-bottom: 1px solid #2b303b;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.good {
+  color: #70e39a;
+}
+
+.bad {
+  color: #ff8585;
+}
+
+.wait {
+  color: #f0ca65;
+}
+
+.err {
+  color: #ff8585;
+}
+
+pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.status {
+  margin-top: 7px;
+}
+
+@media (min-width: 700px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <h1>Nova Paper Trader v4</h1>
+
+  <div class="muted">
+    £100 virtual account • live public market data • autonomous paper decisions
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="small muted">EQUITY</div>
+      <div id="equity" class="metric">£100.00</div>
+    </div>
+
+    <div class="card">
+      <div class="small muted">CASH</div>
+      <div id="cash" class="metric">£100.00</div>
+    </div>
+
+    <div class="card">
+      <div class="small muted">P/L</div>
+      <div id="pnl" class="metric">£0.00</div>
+    </div>
+
+    <div class="card">
+      <div class="small muted">POSITION</div>
+      <div id="pos" class="metric">NONE</div>
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <button id="scanBtn" onclick="scan()">
+      SCAN MARKET NOW
+    </button>
+
+    <button onclick="resetPaper()">
+      RESET £100
+    </button>
+
+    <div id="status" class="muted status">
+      Ready — press Scan Market Now.
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Nova's current decision</h2>
+
+    <div
+      id="decision"
+      class="wait"
+      style="font-size:27px;font-weight:900"
+    >
+      WAIT
+    </div>
+
+    <div id="reason" class="muted">
+      No trade until live data is available.
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Market ranking</h2>
+
+    <div class="muted small">
+      Nova ranks the available assets using momentum, 24-hour performance,
+      position inside the daily range and relative strength against BTC.
+    </div>
+
+    <div style="overflow:auto">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Asset</th>
+            <th>Price</th>
+            <th>24h</th>
+            <th>Range</th>
+            <th>BTC relative</th>
+            <th>Score</th>
+            <th>Signal</th>
+          </tr>
+        </thead>
+
+        <tbody id="markets">
+
+          <tr>
+            <td colspan="7">
+              Waiting for scan…
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Open position</h2>
+
+    <div id="position" class="muted">
+      None
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Trade log</h2>
+
+    <pre id="log" class="muted">No trades yet.</pre>
+
+  </div>
+
+  <div class="card">
+
+    <div class="small muted">
+      PAPER TRADING ONLY.
+      No Kraken private API key is used.
+      This page cannot place real orders or withdraw funds.
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   NOVA PAPER TRADER
+   ========================================================= */
+
+const STARTING_BALANCE = 100;
+
+const TRADING_FEE = 0.004;
+
+const STOP_LOSS = 0.025;
+
+const TAKE_PROFIT = 0.05;
+
+const MAX_ALLOCATION = 0.70;
+
+
+/* =========================================================
+   COINS NOVA IS ALLOWED TO CONSIDER
+   ========================================================= */
+
+const ASSETS = [
+
+  ["BTC", "BTC-GBP"],
+
+  ["ETH", "ETH-GBP"],
+
+  ["SOL", "SOL-GBP"],
+
+  ["LINK", "LINK-GBP"],
+
+  ["XRP", "XRP-GBP"],
+
+  ["ADA", "ADA-GBP"],
+
+  ["AVAX", "AVAX-GBP"],
+
+  ["DOT", "DOT-GBP"],
+
+  ["LTC", "LTC-GBP"],
+
+  ["AAVE", "AAVE-GBP"]
+
+];
+
+
+/* =========================================================
+   PAPER ACCOUNT
+   ========================================================= */
+
+function freshAccount() {
+
+  return {
+
+    cash: STARTING_BALANCE,
+
+    position: null,
+
+    trades: [],
+
+    starting: STARTING_BALANCE
+
+  };
+
+}
+
+
+function loadAccount() {
+
+  try {
+
+    const saved =
+      JSON.parse(
+        localStorage.getItem("novaPaperV4")
+      );
+
+    if (
+      saved &&
+      typeof saved.cash === "number"
+    ) {
+
+      return saved;
+
+    }
+
+  } catch (error) {
+
+  }
+
+  return freshAccount();
+
+}
+
+
+let state = loadAccount();
+
+
+function saveAccount() {
+
+  localStorage.setItem(
+    "novaPaperV4",
+    JSON.stringify(state)
+  );
+
+}
+
+
+/* =========================================================
+   FORMATTING
+   ========================================================= */
+
+function money(value) {
+
+  return "£" + Number(value).toFixed(2);
+
+}
+
+
+function percentage(value) {
+
+  return (value * 100).toFixed(2) + "%";
+
+}
+
+
+function formatPrice(value) {
+
+  if (Number(value) < 10) {
+
+    return Number(value).toFixed(4);
+
+  }
+
+  return Number(value).toFixed(2);
+
+}
+
+
+/* =========================================================
+   PUBLIC MARKET DATA
+   ========================================================= */
+
+/*
+   We deliberately use a public endpoint here.
+
+   There is NO private API key.
+
+   This is only for paper trading.
+*/
+
+
+async function getMarketStats(pair) {
+
+  const url =
+    "https://api.exchange.coinbase.com/products/" +
+    encodeURIComponent(pair) +
+    "/stats";
+
+
+  const response =
+    await fetch(
+      url,
+      {
+        cache: "no-store"
+      }
+    );
+
+
+  if (!response.ok) {
+
+    throw new Error(
+      "Market data HTTP " +
+      response.status
+    );
+
+  }
+
+
+  const data =
+    await response.json();
+
+
+  if (!data.last) {
+
+    throw new Error(
+      "No price returned"
+    );
+
+  }
+
+
+  return {
+
+    pair: pair,
+
+    price: Number(data.last),
+
+    open: Number(data.open),
+
+    high: Number(data.high),
+
+    low: Number(data.low)
+
+  };
+
+}
+
+
+/* =========================================================
+   SCAN
+   ========================================================= */
+
+async function scan() {
+
+  const button =
+    document.getElementById(
+      "scanBtn"
+    );
+
+
+  button.disabled = true;
+
+
+  document.getElementById(
+    "status"
+  ).textContent =
+    "Scanning live public market data…";
+
+
+  try {
+
+    const results = [];
+
+
+    for (const asset of ASSETS) {
+
+      try {
+
+        const stats =
+          await getMarketStats(
+            asset[1]
+          );
+
+
+        results.push({
+
+          name: asset[0],
+
+          pair: asset[1],
+
+          stats: stats
+
+        });
+
+
+      } catch (error) {
+
+        results.push({
+
+          name: asset[0],
+
+          pair: asset[1],
+
+          error: error.message
+
+        });
+
+      }
+
+    }
+
+
+    const usable =
+      results.filter(
+        item => !item.error
+      );
+
+
+    if (!usable.length) {
+
+      throw new Error(
+        "No public market data responded."
+      );
+
+    }
+
+
+    /*
+       Work out BTC's 24h performance.
+    */
+
+    const btc =
+      usable.find(
+        item => item.name === "BTC"
+      );
+
+
+    const btcReturn =
+      btc
+        ? btc.stats.price /
+          btc.stats.open -
+          1
+        : 0;
+
+
+    /*
+       Calculate Nova's score.
+    */
+
+    for (const item of usable) {
+
+      const s =
+        item.stats;
+
+
+      const return24h =
+        s.price /
+        s.open -
+        1;
+
+
+      const dailyRange =
+        s.high -
+        s.low;
+
+
+      let rangePosition = 0.5;
+
+
+      if (dailyRange > 0) {
+
+        rangePosition =
+          (
+            s.price -
+            s.low
+          ) /
+          dailyRange;
+
+      }
+
+
+      const relativeStrength =
+        return24h -
+        btcReturn;
+
+
+      /*
+         Start at neutral.
+      */
+
+      let score = 50;
+
+
+      /*
+         Momentum.
+      */
+
+      score +=
+        Math.max(
+          -20,
+          Math.min(
+            20,
+            return24h * 250
+          )
+        );
+
+
+      /*
+         Performance versus BTC.
+      */
+
+      score +=
+        Math.max(
+          -15,
+          Math.min(
+            15,
+            relativeStrength * 250
+          )
+        );
+
+
+      /*
+         Where price sits in today's range.
+      */
+
+      score +=
+        (rangePosition - 0.5) * 20;
+
+
+      /*
+         Avoid chasing extreme daily pumps.
+      */
+
+      if (return24h > 0.08) {
+
+        score -= 12;
+
+      }
+
+
+      /*
+         Penalise severe weakness.
+      */
+
+      if (return24h < -0.08) {
+
+        score -= 8;
+
+      }
+
+
+      item.return24h =
+        return24h;
+
+
+      item.rangePosition =
+        rangePosition;
+
+
+      item.relativeStrength =
+        relativeStrength;
+
+
+      item.score =
+        Math.round(
+          Math.max(
+            0,
+            Math.min(
+              100,
+              score
+            )
+          )
+        );
+
+    }
+
+
+    /*
+       Strongest first.
+    */
+
+    usable.sort(
+      (a, b) =>
+        b.score -
+        a.score
+    );
+
+
+    renderMarkets(
+      results
+    );
+
+
+    makeDecision(
+      usable
+    );
+
+
+    render(
+      usable
+    );
+
+
+    document.getElementById(
+      "status"
+    ).textContent =
+      "Scan complete • " +
+      new Date().toLocaleTimeString();
+
+
+  } catch (error) {
+
+    document.getElementById(
+      "status"
+    ).textContent =
+      "Scan failed: " +
+      error.message;
+
+
+    setDecision(
+
+      "WAIT",
+
+      "Nova could not obtain live market data. No trade was made."
+
+    );
+
+  }
+
+
+  button.disabled = false;
+
+}
+
+
+/* =========================================================
+   NOVA DECISION ENGINE
+   ========================================================= */
+
+function makeDecision(results) {
+
+
+  /*
+     If we already own something,
+     manage that position first.
+  */
+
+  if (state.position) {
+
+    const current =
+      results.find(
+        item =>
+          item.pair ===
+          state.position.pair
+      );
+
+
+    if (!current) {
+
+      setDecision(
+
+        "HOLD",
+
+        "Current position data is temporarily unavailable."
+
+      );
+
+      return;
+
+    }
+
+
+    const currentReturn =
+      current.stats.price /
+      state.position.entry -
+      1;
+
+
+    /*
+       Hard stop.
+    */
+
+    if (
+      currentReturn <=
+      -STOP_LOSS
+    ) {
+
+      closePosition(
+        current,
+        "2.5% stop loss"
+      );
+
+      return;
+
+    }
+
+
+    /*
+       Profit target.
+    */
+
+    if (
+      currentReturn >=
+      TAKE_PROFIT
+    ) {
+
+      closePosition(
+        current,
+        "5% take profit"
+      );
+
+      return;
+
+    }
+
+
+    /*
+       Exit if the setup has badly deteriorated.
+    */
+
+    if (
+      current.score < 30
+    ) {
+
+      closePosition(
+        current,
+        "signal deteriorated"
+      );
+
+      return;
+
+    }
+
+
+    setDecision(
+
+      "HOLD",
+
+      "Holding " +
+      current.name +
+      ". Current return: " +
+      percentage(currentReturn) +
+      ". Score: " +
+      current.score +
+      "/100."
+
+    );
+
+    return;
+
+  }
+
+
+  /*
+     No position.
+
+     Look at the strongest candidate.
+  */
+
+  const best =
+    results[0];
+
+
+  /*
+     BTC itself is used as a market reference.
+     We don't buy it in this first experimental
+     version so Nova has something to compare
+     the altcoins against.
+  */
+
+  if (
+    best.name !== "BTC" &&
+    best.score >= 70 &&
+    state.cash >= 5
+  ) {
+
+
+    /*
+       Never put the whole £100 into one trade.
+
+       Maximum initial allocation:
+       70% of available cash.
+
+       This leaves cash available.
+    */
+
+    const allocation =
+      Math.min(
+        state.cash *
+        MAX_ALLOCATION,
+
+        60
+      );
+
+
+    const fee =
+      allocation *
+      TRADING_FEE;
+
+
+    const quantity =
+      (
+        allocation -
+        fee
+      ) /
+      best.stats.price;
+
+
+    state.cash -=
+      allocation;
+
+
+    state.position = {
+
+      name:
+        best.name,
+
+      pair:
+        best.pair,
+
+      quantity:
+        quantity,
+
+      entry:
+        best.stats.price,
+
+      cost:
+        allocation
+
+    };
+
+
+    state.trades.unshift({
+
+      time:
+        new Date().toLocaleString(),
+
+      side:
+        "BUY",
+
+      asset:
+        best.name,
+
+      price:
+        best.stats.price,
+
+      reason:
+        "Score " +
+        best.score +
+        "; 24h " +
+        percentage(best.return24h) +
+        "; relative BTC " +
+        percentage(best.relativeStrength)
+
+    });
+
+
+    saveAccount();
+
+
+    setDecision(
+
+      "BUY",
+
+      "Nova selected " +
+      best.name +
+      ". Score " +
+      best.score +
+      "/100. Strongest candidate in this scan."
+
+    );
+
+
+  } else {
+
+
+    setDecision(
+
+      "WAIT",
+
+      "Best candidate: " +
+      best.name +
+      " with a score of " +
+      best.score +
+      "/100. Nova is not forcing a trade."
+
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   CLOSE POSITION
+   ========================================================= */
+
+function closePosition(
+  market,
+  reason
+) {
+
+
+  const exitPrice =
+    market.stats.price;
+
+
+  const currentReturn =
+    exitPrice /
+    state.position.entry -
+    1;
+
+
+  const grossValue =
+    state.position.quantity *
+    exitPrice;
+
+
+  const afterFee =
+    grossValue *
+    (1 - TRADING_FEE);
+
+
+  state.cash +=
+    afterFee;
+
+
+  state.trades.unshift({
+
+    time:
+      new Date().toLocaleString(),
+
+    side:
+      "SELL",
+
+    asset:
+      market.name,
+
+    price:
+      exitPrice,
+
+    reason:
+      reason +
+      "; return " +
+      percentage(currentReturn)
+
+  });
+
+
+  state.position =
+    null;
+
+
+  saveAccount();
+
+
+  setDecision(
+
+    "SELL",
+
+    "Nova closed " +
+    market.name +
+    ": " +
+    reason +
+    ". Return " +
+    percentage(currentReturn) +
+    " before fees."
+
+  );
+
+}
+
+
+/* =========================================================
+   DISPLAY MARKET TABLE
+   ========================================================= */
+
+function renderMarkets(
+  results
+) {
+
+
+  const table =
+    document.getElementById(
+      "markets"
+    );
+
+
+  table.innerHTML =
+    results.map(
+      item => {
+
+
+        if (item.error) {
+
+          return `
+
+            <tr>
+
+              <td>${item.name}</td>
+
+              <td colspan="6"
+                  class="err">
+
+                Unavailable:
+                ${item.error}
+
+              </td>
+
+            </tr>
+
+          `;
+
+        }
+
+
+        let signal =
+          "WAIT";
+
+
+        if (
+          item.name !== "BTC" &&
+          item.score >= 70
+        ) {
+
+          signal =
+            "BUY";
+
+        }
+
+
+        if (
+          item.score < 30
+        ) {
+
+          signal =
+            "SELL";
+
+        }
+
+
+        return `
+
+          <tr>
+
+            <td>
+              <b>${item.name}</b>
+            </td>
+
+            <td>
+              ${formatPrice(
+                item.stats.price
+              )}
+            </td>
+
+            <td class="${
+              item.return24h >= 0
+              ? "good"
+              : "bad"
+            }">
+
+              ${percentage(
+                item.return24h
+              )}
+
+            </td>
+
+            <td>
+
+              ${
+                (
+                  item.rangePosition *
+                  100
+                ).toFixed(0)
+              }%
+
+            </td>
+
+            <td class="${
+              item.relativeStrength >= 0
+              ? "good"
+              : "bad"
+            }">
+
+              ${percentage(
+                item.relativeStrength
+              )}
+
+            </td>
+
+            <td>
+              ${item.score}
+            </td>
+
+            <td class="${
+              signal === "BUY"
+              ? "good"
+              : signal === "SELL"
+              ? "bad"
+              : "wait"
+            }">
+
+              ${signal}
+
+            </td>
+
+          </tr>
+
+        `;
+
+      }
+    ).join("");
+
+}
+
+
+/* =========================================================
+   DISPLAY ACCOUNT
+   ========================================================= */
+
+function render(
+  markets = []
+) {
+
+
+  let equity =
+    state.cash;
+
+
+  if (
+    state.position
+  ) {
+
+
+    const current =
+      markets.find(
+        item =>
+          item.pair ===
+          state.position.pair
+      );
+
+
+    if (current) {
+
+      equity +=
+        state.position.quantity *
+        current.stats.price *
+        (1 - TRADING_FEE);
+
+    }
+
+  }
+
+
+  const profit =
+    equity -
+    state.starting;
+
+
+  document.getElementById(
+    "equity"
+  ).textContent =
+    money(equity);
+
+
+  document.getElementById(
+    "cash"
+  ).textContent =
+    money(state.cash);
+
+
+  document.getElementById(
+    "pnl"
+  ).textContent =
+    money(profit);
+
+
+  document.getElementById(
+    "pos"
+  ).textContent =
+    state.position
+    ? state.position.name
+    : "NONE";
+
+
+  if (
+    state.position
+  ) {
+
+
+    document.getElementById(
+      "position"
+    ).innerHTML = `
+
+      Holding
+      <b>
+        ${state.position.name}
+      </b>
+
+      <br>
+
+      Entry:
+      ${formatPrice(
+        state.position.entry
+      )}
+
+      <br>
+
+      Units:
+      ${state.position.quantity.toFixed(7)}
+
+      <br>
+
+      Capital allocated:
+      ${money(
+        state.position.cost
+      )}
+
+    `;
+
+
+  } else {
+
+
+    document.getElementById(
+      "position"
+    ).textContent =
+      "None";
+
+  }
+
+
+  if (
+    state.trades.length
+  ) {
+
+
+    document.getElementById(
+      "log"
+    ).textContent =
+
+      state.trades
+        .map(
+          trade =>
+
+            trade.time +
+            " | " +
+            trade.side +
+            " " +
+            trade.asset +
+            " | " +
+            formatPrice(
+              trade.price
+            ) +
+            " | " +
+            trade.reason
+
+        )
+        .join("\n");
+
+
+  } else {
+
+
+    document.getElementById(
+      "log"
+    ).textContent =
+      "No trades yet.";
+
+  }
+
+}
+
+
+/* =========================================================
+   DECISION DISPLAY
+   ========================================================= */
+
+function setDecision(
+  decision,
+  reason
+) {
+
+
+  const element =
+    document.getElementById(
+      "decision"
+    );
+
+
+  element.textContent =
+    decision;
+
+
+  element.className =
+
+    decision === "BUY"
+      ? "good"
+
+    : decision === "SELL"
+      ? "bad"
+
+    : "wait";
+
+
+  document.getElementById(
+    "reason"
+  ).textContent =
+    reason;
+
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+function resetPaper() {
+
+
+  state =
+    freshAccount();
+
+
+  saveAccount();
+
+
+  render([]);
+
+
+  document.getElementById(
+    "markets"
+  ).innerHTML = `
+
+    <tr>
+
+      <td colspan="7">
+
+        £100 reset successfully.
+        Press SCAN MARKET NOW.
+
+      </td>
+
+    </tr>
+
+  `;
+
+
+  setDecision(
+
+    "WAIT",
+
+    "Paper account reset to £100. No real funds are affected."
+
+  );
+
+
+  document.getElementById(
+    "status"
+  ).textContent =
+    "£100 reset successfully.";
+
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+render();
+
+scan();
+
+
+/*
+   Automatically scan once per minute.
+*/
+
+setInterval(
+  scan,
+  60000
+);
+
+</script>
+
+</body>
+</html>
