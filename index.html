@@ -1,686 +1,469 @@
 <!doctype html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Nova Paper Trader V6.3</title>
-
-<style>
+<title>Nova Paper Trader V6.2.2</title><style>
 :root{
- --bg:#070b14;--p:#10182a;--p2:#0c1424;--line:#263656;
- --text:#edf4ff;--muted:#91a1bd;--blue:#4ea1ff;--cyan:#4de1ff;
- --green:#35df91;--red:#ff6072;--amber:#ffc857;--purple:#9b7cff
+--bg:#070b14;--p:#10182a;--p2:#0c1424;--line:#263656;
+--text:#edf4ff;--muted:#91a1bd;--blue:#4ea1ff;--cyan:#4de1ff;
+--green:#35df91;--red:#ff6072;--amber:#ffc857;--purple:#9b7cff
 }
 *{box-sizing:border-box}
 body{
- margin:0;
- background:radial-gradient(circle at 10% 0,#152b52 0,#070b14 38%);
- color:var(--text);
- font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+margin:0;background:radial-gradient(circle at 10% 0,#152b52 0,#070b14 38%);
+color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
 }
 .wrap{max-width:1500px;margin:auto;padding:12px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .brand{display:flex;gap:11px;align-items:center}
 .logo{
- width:45px;height:45px;border-radius:14px;display:grid;place-items:center;
- font-weight:950;font-size:21px;
- background:linear-gradient(135deg,var(--blue),var(--purple));
- box-shadow:0 0 28px #4ea1ff44
+width:45px;height:45px;border-radius:14px;display:grid;place-items:center;
+font-weight:950;font-size:21px;background:linear-gradient(135deg,var(--blue),var(--purple));
+box-shadow:0 0 28px #4ea1ff44
 }
 h1{margin:0;font-size:22px}
 .sub{font-size:11px;color:var(--muted);margin-top:3px}
 .buttons{display:flex;gap:8px;flex-wrap:wrap}
 button{
- border:0;border-radius:10px;padding:11px 14px;font-weight:850;
- cursor:pointer;background:var(--blue);color:#06101e
+border:0;border-radius:10px;padding:11px 14px;font-weight:850;cursor:pointer;
+background:var(--blue);color:#06101e
 }
 button.secondary{background:#202e49;color:#fff}
 button:disabled{opacity:.5;cursor:not-allowed}
-
-.grid{
- display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0
-}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
 .card,.panel{
- background:linear-gradient(180deg,var(--p),#0d1525);
- border:1px solid var(--line);border-radius:14px;
- box-shadow:0 8px 30px #0004
+background:linear-gradient(180deg,var(--p),#0d1525);
+border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 30px #0004
 }
 .card{padding:11px}
 .panel{padding:12px;margin:9px 0}
 .panel h2{font-size:14px;margin:0 0 9px}
 .label{
- font-size:9px;color:var(--muted);text-transform:uppercase;
- letter-spacing:.08em
+font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em
 }
 .value{font-size:20px;font-weight:900;margin-top:3px}
 .small{font-size:10px;color:var(--muted)}
-
-.regime{
- display:flex;justify-content:space-between;align-items:center;gap:12px
-}
+.regime{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .regimeName{font-size:18px;font-weight:950}
 .bar{
- height:8px;background:#202c45;border-radius:10px;
- overflow:hidden;margin-top:8px
+height:8px;background:#202c45;border-radius:10px;overflow:hidden;margin-top:8px
 }
 .fill{
- height:100%;width:0;
- background:linear-gradient(90deg,var(--blue),var(--cyan));
- transition:.35s
+height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));
+transition:.35s
 }
-
 .decision{font-size:17px;font-weight:900;line-height:1.4}
 .reason{line-height:1.5;color:#c6d2e7;font-size:11px}
-
-.kpis{
- display:grid;grid-template-columns:repeat(6,1fr);gap:7px
-}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
 .mini{
- background:var(--p2);border:1px solid var(--line);
- border-radius:10px;padding:8px
+background:var(--p2);border:1px solid var(--line);border-radius:10px;padding:8px
 }
 .mini b{display:block;font-size:14px;margin-top:3px}
-
-.position{
- display:grid;grid-template-columns:repeat(6,1fr);gap:8px
-}
+.position{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
 .tablewrap{overflow:auto}
-table{
- width:100%;min-width:1500px;border-collapse:collapse
-}
+table{width:100%;min-width:1350px;border-collapse:collapse}
 th,td{
- padding:7px 5px;border-bottom:1px solid #1e2a42;
- text-align:left;font-size:10px;white-space:nowrap
+padding:7px 5px;border-bottom:1px solid #1e2a42;text-align:left;
+font-size:10px;white-space:nowrap
 }
 th{
- color:var(--muted);font-size:8px;letter-spacing:.06em;
- text-transform:uppercase;background:#10182a;
- position:sticky;top:0
+color:var(--muted);font-size:8px;letter-spacing:.06em;text-transform:uppercase;
+background:#10182a;position:sticky;top:0
 }
-
 .good{color:var(--green)}
 .bad{color:var(--red)}
 .warn{color:var(--amber)}
 .blue{color:var(--blue)}
-
 .pill{
- display:inline-block;padding:3px 6px;border-radius:99px;
- background:#1a2944;border:1px solid #2c4165;
- font-size:8px;font-weight:850
+display:inline-block;padding:3px 6px;border-radius:99px;background:#1a2944;
+border:1px solid #2c4165;font-size:8px;font-weight:850
 }
 .score{font-size:13px;font-weight:950}
 .signal{font-weight:950}
 .buy{color:var(--green)}
 .watch{color:var(--amber)}
 .avoid{color:var(--red)}
-
-.news{
- display:grid;grid-template-columns:repeat(2,1fr);gap:7px
-}
+.news{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
 .newsItem{
- background:var(--p2);border:1px solid var(--line);
- border-radius:10px;padding:8px
+background:var(--p2);border:1px solid var(--line);border-radius:10px;padding:8px
 }
 .newsTitle{font-size:10px;font-weight:800;line-height:1.35}
 .newsMeta{font-size:8px;color:var(--muted);margin-top:4px}
-
 .log{max-height:300px;overflow:auto}
 .logrow{
- padding:7px 0;border-bottom:1px solid var(--line);
- font-size:10px;line-height:1.45
+padding:7px 0;border-bottom:1px solid var(--line);
+font-size:10px;line-height:1.45
 }
-
-.notice{
- font-size:9px;color:var(--muted);line-height:1.55
-}
-
-.two{
- display:grid;grid-template-columns:1.2fr .8fr;gap:9px
-}
-
-.psych{
- display:grid;grid-template-columns:repeat(6,1fr);gap:7px
-}
+.notice{font-size:9px;color:var(--muted);line-height:1.55}
+.two{display:grid;grid-template-columns:1.2fr .8fr;gap:9px}
+.psych{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
 .meter{
- height:7px;background:#202c45;border-radius:8px;
- overflow:hidden;margin-top:5px
+height:7px;background:#202c45;border-radius:8px;overflow:hidden;margin-top:5px
 }
-.meter i{
- display:block;height:100%;width:0;background:var(--blue)
-}
-
-.why{
- display:grid;grid-template-columns:repeat(2,1fr);gap:7px
-}
+.meter i{display:block;height:100%;width:0;background:var(--blue)}
+.why{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
 .whyBox{
- background:var(--p2);border:1px solid var(--line);
- border-radius:10px;padding:8px
+background:var(--p2);border:1px solid var(--line);border-radius:10px;padding:8px
 }
-
 .err{
- background:#2b1118;border:1px solid #6b2733;color:#ffd8dd;
- padding:8px;border-radius:9px;font-size:10px;
- display:none;margin-top:8px
+background:#2b1118;border:1px solid #6b2733;color:#ffd8dd;padding:8px;
+border-radius:9px;font-size:10px;display:none;margin-top:8px
 }
-
-.health{
- display:flex;align-items:center;gap:8px
-}
-
-.dot{
- width:9px;height:9px;border-radius:50%;
- background:var(--amber);display:inline-block
-}
-.dot.ok{background:var(--green)}
-.dot.bad{background:var(--red)}
+.dataGood{color:var(--green)}
+.dataBad{color:var(--red)}
+.dataBuilding{color:var(--amber)}
 
 @media(max-width:1000px){
- .grid{grid-template-columns:repeat(2,1fr)}
- .position{grid-template-columns:repeat(3,1fr)}
- .kpis{grid-template-columns:repeat(3,1fr)}
- .psych{grid-template-columns:repeat(3,1fr)}
- .two{grid-template-columns:1fr}
+.grid{grid-template-columns:repeat(2,1fr)}
+.position{grid-template-columns:repeat(3,1fr)}
+.kpis{grid-template-columns:repeat(3,1fr)}
+.psych{grid-template-columns:repeat(3,1fr)}
+.two{grid-template-columns:1fr}
 }
 @media(max-width:560px){
- .wrap{padding:8px}
- .grid{gap:6px}
- .card{padding:8px}
- .value{font-size:17px}
- .position{grid-template-columns:repeat(2,1fr)}
- .kpis{grid-template-columns:repeat(2,1fr)}
- .psych{grid-template-columns:repeat(2,1fr)}
- .news,.why{grid-template-columns:1fr}
- h1{font-size:18px}
- .decision{font-size:15px}
+.wrap{padding:8px}
+.grid{gap:6px}
+.card{padding:8px}
+.value{font-size:17px}
+.position{grid-template-columns:repeat(2,1fr)}
+.kpis{grid-template-columns:repeat(2,1fr)}
+.psych{grid-template-columns:repeat(2,1fr)}
+.news,.why{grid-template-columns:1fr}
+h1{font-size:18px}
+.decision{font-size:15px}
 }
-</style>
-</head>
-
-<body>
-<div class="wrap">
-
-<div class="top">
- <div class="brand">
-  <div class="logo">N</div>
-  <div>
-   <h1>Nova Paper Trader V6.3</h1>
-   <div class="sub">
-    £100 virtual account • 5-asset intelligence engine • Binance + fallback feeds
-   </div>
-  </div>
- </div>
-
- <div class="buttons">
-  <button id="scanBtn" onclick="scan()">SCAN MARKET NOW</button>
-  <button class="secondary" onclick="resetPaper()">RESET £100</button>
- </div>
+</style></head><body>
+<div class="wrap"><div class="top">
+<div class="brand">
+<div class="logo">N</div>
+<div>
+<h1>Nova Paper Trader V6.2.2</h1>
+<div class="sub">£100 virtual account • adaptive multi-strategy • psychology • Binance public market data</div>
 </div>
-
-<div class="grid">
-
- <div class="card">
-  <div class="label">Equity</div>
-  <div id="equity" class="value">£100.00</div>
-  <div class="small">Starting £100.00</div>
- </div>
-
- <div class="card">
-  <div class="label">Cash</div>
-  <div id="cash" class="value">£100.00</div>
-  <div id="invested" class="small">Invested £0.00</div>
- </div>
-
- <div class="card">
-  <div class="label">Net P/L</div>
-  <div id="pnl" class="value">£0.00</div>
-  <div id="pnlpct" class="small">0.00%</div>
- </div>
-
- <div class="card">
-  <div class="label">Position</div>
-  <div id="pos" class="value">NONE</div>
-  <div id="posSub" class="small">No open position</div>
- </div>
-
+</div><div class="buttons">
+<button id="scanBtn" onclick="scan()">SCAN MARKET NOW</button>
+<button class="secondary" onclick="resetPaper()">RESET £100</button>
 </div>
-
-<div class="panel">
- <div class="regime">
-
-  <div>
-   <div class="label">Market Regime</div>
-   <div id="regime" class="regimeName">WAITING</div>
-   <div id="regimeText" class="small">
-    Waiting for BTC trend and volatility data.
-   </div>
-  </div>
-
-  <div style="text-align:right">
-   <div class="label">Confidence</div>
-   <strong id="confidence">0%</strong>
-  </div>
-
- </div>
-
- <div class="bar">
-  <div id="confidenceBar" class="fill"></div>
- </div>
+</div><div class="grid"><div class="card">
+<div class="label">Equity</div>
+<div id="equity" class="value">£100.00</div>
+<div class="small">Starting £100.00</div>
+</div><div class="card">
+<div class="label">Cash</div>
+<div id="cash" class="value">£100.00</div>
+<div id="invested" class="small">Invested £0.00</div>
+</div><div class="card">
+<div class="label">Net P/L</div>
+<div id="pnl" class="value">£0.00</div>
+<div id="pnlpct" class="small">0.00%</div>
+</div><div class="card">
+<div class="label">Position</div>
+<div id="pos" class="value">NONE</div>
+<div id="posSub" class="small">No open position</div>
+</div></div><div class="panel"><div class="regime"><div>
+<div class="label">Market Regime</div>
+<div id="regime" class="regimeName">BUILDING DATA</div>
+<div id="regimeText" class="small">
+Waiting for BTC trend and volatility data.
 </div>
-
-<div class="two">
-
- <div class="panel">
-  <h2>Nova's Current Decision</h2>
-  <div id="decision" class="decision">
-   WAIT — no decision yet.
-  </div>
-  <div id="decisionDetail" class="reason" style="margin-top:5px">
-   Nova will not force a trade.
-  </div>
-  <div id="errorBox" class="err"></div>
- </div>
-
- <div class="panel">
-  <h2>Active Strategy</h2>
-  <div id="strategy" class="decision">NONE</div>
-  <div id="strategyDetail" class="reason" style="margin-top:5px">
-   No active setup.
-  </div>
- </div>
-
+</div><div style="text-align:right">
+<div class="label">Confidence</div>
+<strong id="confidence">0%</strong>
+</div></div><div class="bar">
+<div id="confidenceBar" class="fill"></div>
+</div></div><div class="two"><div class="panel">
+<h2>Nova's Current Decision</h2>
+<div id="decision" class="decision">WAIT — collecting market data</div>
+<div id="decisionDetail" class="reason" style="margin-top:5px">
+Nova will not force a trade while data is incomplete.
 </div>
-
-<div class="panel">
- <h2>Human Behaviour Engine</h2>
-
- <div class="psych">
-
-  <div class="mini">
-   <div class="label">FOMO</div>
-   <b id="fomo">0</b>
-   <div class="meter"><i id="fomoBar"></i></div>
-  </div>
-
-  <div class="mini">
-   <div class="label">Panic</div>
-   <b id="panic">0</b>
-   <div class="meter"><i id="panicBar"></i></div>
-  </div>
-
-  <div class="mini">
-   <div class="label">Herding</div>
-   <b id="herding">0</b>
-   <div class="meter"><i id="herdingBar"></i></div>
-  </div>
-
-  <div class="mini">
-   <div class="label">Crowding</div>
-   <b id="crowding">0</b>
-   <div class="meter"><i id="crowdingBar"></i></div>
-  </div>
-
-  <div class="mini">
-   <div class="label">Narrative Heat</div>
-   <b id="narrative">0</b>
-   <div class="meter"><i id="narrativeBar"></i></div>
-  </div>
-
-  <div class="mini">
-   <div class="label">Behaviour</div>
-   <b id="behaviour">NEUTRAL</b>
-   <div class="small">composite</div>
-  </div>
-
- </div>
+<div id="errorBox" class="err"></div>
+</div><div class="panel">
+<h2>Active Strategy</h2>
+<div id="strategy" class="decision">NONE</div>
+<div id="strategyDetail" class="reason" style="margin-top:5px">
+No active setup.
 </div>
-
-<div class="panel">
- <h2>Performance</h2>
-
- <div class="kpis">
-
-  <div class="mini">
-   <div class="label">Closed Trades</div>
-   <b id="trades">0</b>
-  </div>
-
-  <div class="mini">
-   <div class="label">Win Rate</div>
-   <b id="winrate">0%</b>
-  </div>
-
-  <div class="mini">
-   <div class="label">Realised P/L</div>
-   <b id="realized">£0.00</b>
-  </div>
-
-  <div class="mini">
-   <div class="label">Fees</div>
-   <b id="fees">£0.00</b>
-  </div>
-
-  <div class="mini">
-   <div class="label">Best Trade</div>
-   <b id="best">£0.00</b>
-  </div>
-
-  <div class="mini">
-   <div class="label">Worst Trade</div>
-   <b id="worst">£0.00</b>
-  </div>
-
- </div>
+</div></div><div class="panel">
+<h2>Human Behaviour Engine</h2><div class="psych"><div class="mini">
+<div class="label">FOMO</div>
+<b id="fomo">0</b>
+<div class="meter"><i id="fomoBar"></i></div>
+</div><div class="mini">
+<div class="label">Panic</div>
+<b id="panic">0</b>
+<div class="meter"><i id="panicBar"></i></div>
+</div><div class="mini">
+<div class="label">Herding</div>
+<b id="herding">0</b>
+<div class="meter"><i id="herdingBar"></i></div>
+</div><div class="mini">
+<div class="label">Crowding</div>
+<b id="crowding">0</b>
+<div class="meter"><i id="crowdingBar"></i></div>
+</div><div class="mini">
+<div class="label">Narrative Heat</div>
+<b id="narrative">0</b>
+<div class="meter"><i id="narrativeBar"></i></div>
+</div><div class="mini">
+<div class="label">Behaviour</div>
+<b id="behaviour">NEUTRAL</b>
+<div class="small">composite</div>
+</div></div>
+</div><div class="panel">
+<h2>Performance</h2><div class="kpis"><div class="mini">
+<div class="label">Closed Trades</div>
+<b id="trades">0</b>
+</div><div class="mini">
+<div class="label">Win Rate</div>
+<b id="winrate">0%</b>
+</div><div class="mini">
+<div class="label">Realised P/L</div>
+<b id="realized">£0.00</b>
+</div><div class="mini">
+<div class="label">Fees</div>
+<b id="fees">£0.00</b>
+</div><div class="mini">
+<div class="label">Best Trade</div>
+<b id="best">£0.00</b>
+</div><div class="mini">
+<div class="label">Worst Trade</div>
+<b id="worst">£0.00</b>
+</div></div>
+</div><div class="panel">
+<h2>Risk Monitor</h2><div class="kpis"><div class="mini">
+<div class="label">Current DD</div>
+<b id="dd">0.00%</b>
+</div><div class="mini">
+<div class="label">Max DD</div>
+<b id="maxdd">0.00%</b>
+</div><div class="mini">
+<div class="label">Daily Trades</div>
+<b id="daily">0 / 5</b>
+</div><div class="mini">
+<div class="label">Cooldown</div>
+<b id="cooldown">READY</b>
+</div><div class="mini">
+<div class="label">Data Health</div>
+<b id="dataHealth">—</b>
+</div><div class="mini">
+<div class="label">Last Scan</div>
+<b id="lastScan">—</b>
+</div></div>
+</div><div class="panel">
+<h2>Open Position</h2>
+<div id="positionBox" class="position">
+<div class="small">None</div>
 </div>
-
-<div class="panel">
- <h2>Risk Monitor</h2>
-
- <div class="kpis">
-
-  <div class="mini">
-   <div class="label">Current DD</div>
-   <b id="dd">0.00%</b>
-  </div>
-
-  <div class="mini">
-   <div class="label">Max DD</div>
-   <b id="maxdd">0.00%</b>
-  </div>
-
-  <div class="mini">
-   <div class="label">Daily Trades</div>
-   <b id="daily">0 / 5</b>
-  </div>
-
-  <div class="mini">
-   <div class="label">Cooldown</div>
-   <b id="cooldown">READY</b>
-  </div>
-
-  <div class="mini">
-   <div class="label">Data Health</div>
-   <b id="dataHealth">—</b>
-  </div>
-
-  <div class="mini">
-   <div class="label">Last Scan</div>
-   <b id="lastScan">—</b>
-  </div>
-
- </div>
+</div><div class="panel"><h2>Market Ranking</h2><div id="status" class="small" style="margin-bottom:8px">
+Starting Binance market scanner…
+</div><div class="tablewrap"><table><thead>
+<tr>
+<th>Asset</th>
+<th>Price GBP</th>
+<th>24h</th>
+<th>RSI</th>
+<th>Trend</th>
+<th>1h</th>
+<th>4h</th>
+<th>RS BTC</th>
+<th>Volume</th>
+<th>FOMO</th>
+<th>Psych</th>
+<th>News</th>
+<th>Strategy</th>
+<th>Score</th>
+<th>Signal</th>
+<th>Data</th>
+</tr>
+</thead><tbody id="markets">
+<tr>
+<td colspan="16">Waiting for scan…</td>
+</tr>
+</tbody></table></div>
+</div><div class="panel"><h2>Why?</h2><div id="why" class="why"><div class="whyBox">
+<div class="label">Bullish Evidence</div>
+<div id="bullWhy" class="reason">Waiting.</div>
+</div><div class="whyBox">
+<div class="label">Bearish / Contradicting Evidence</div>
+<div id="bearWhy" class="reason">Waiting.</div>
+</div></div></div><div class="panel"><h2>News Intelligence</h2><div id="newsStatus" class="small" style="margin-bottom:8px">
+News is secondary confirmation. Hard risk controls always win.
+</div><div id="news" class="news">
+<div class="newsItem">
+<div class="small">No news loaded yet.</div>
 </div>
+</div></div><div class="panel"><h2>Trade Log</h2><div id="log" class="log">
+<div class="small">No trades yet.</div>
+</div></div><div class="panel notice"><strong>PAPER TRADING ONLY.</strong>
+V6.2.2 cannot place real orders, withdraw funds or access private exchange accounts.
+It uses public market-data endpoints only. Data can be delayed, unavailable or rate-limited.
+Nova favours WAIT rather than inventing missing information. Technical and behavioural signals
+are statistical proxies, not predictions. Fees and slippage are simulated.
 
-<div class="panel">
- <h2>Open Position</h2>
- <div id="positionBox" class="position">
-  <div class="small">None</div>
- </div>
-</div>
+</div></div><script>
 
-<div class="panel">
-
- <h2>Market Ranking</h2>
-
- <div id="status" class="small" style="margin-bottom:8px">
-  Ready.
- </div>
-
- <div class="tablewrap">
-
-  <table>
-
-   <thead>
-    <tr>
-     <th>Asset</th>
-     <th>Price</th>
-     <th>24h</th>
-     <th>RSI</th>
-     <th>Trend</th>
-     <th>1h Mom</th>
-     <th>4h Mom</th>
-     <th>BTC Rel.</th>
-     <th>Vol</th>
-     <th>FOMO</th>
-     <th>Psych</th>
-     <th>News</th>
-     <th>Strategy</th>
-     <th>Score</th>
-     <th>Signal</th>
-     <th>Data</th>
-    </tr>
-   </thead>
-
-   <tbody id="markets">
-    <tr>
-     <td colspan="16">Waiting for scan…</td>
-    </tr>
-   </tbody>
-
-  </table>
-
- </div>
-</div>
-
-<div class="panel">
-
- <h2>Why?</h2>
-
- <div id="why" class="why">
-
-  <div class="whyBox">
-   <div class="label">Bullish Evidence</div>
-   <div id="bullWhy" class="reason">Waiting.</div>
-  </div>
-
-  <div class="whyBox">
-   <div class="label">Bearish / Contradicting Evidence</div>
-   <div id="bearWhy" class="reason">Waiting.</div>
-  </div>
-
- </div>
-</div>
-
-<div class="panel">
-
- <h2>News Intelligence</h2>
-
- <div id="newsStatus" class="small" style="margin-bottom:8px">
-  News is secondary confirmation. Hard risk controls always win.
- </div>
-
- <div id="news" class="news">
-  <div class="newsItem">
-   <div class="small">No news loaded yet.</div>
-  </div>
- </div>
-
-</div>
-
-<div class="panel">
-
- <h2>Trade Log</h2>
-
- <div id="log" class="log">
-  <div class="small">No trades yet.</div>
- </div>
-
-</div>
-
-<div class="panel notice">
- <strong>PAPER TRADING ONLY.</strong>
- V6.3 cannot place real orders, withdraw funds or access private exchange accounts.
- Binance market data is public. API failures are handled with backoff and fallbacks.
- Technical, behavioural and news scores are proxies rather than predictions.
- Fees and estimated slippage are simulated.
- This system does not guarantee profit and is not financial advice.
-</div>
-
-</div>
-
-<script>
-
-/* =========================================================
-   NOVA PAPER TRADER V6.3
-   ========================================================= */
+/* ============================================================
+   NOVA PAPER TRADER V6.2.2
+   GitHub Pages compatible / browser only
+   ============================================================ */
 
 const CFG = {
 
- START:100,
+START:100,
 
- /* simulated trading costs */
- FEE:0.004,
- SLIP:0.0015,
+/* simulated costs */
+FEE:0.004,
+SLIP:0.0015,
 
- /* risk */
- MIN_STOP:0.025,
- MAX_STOP:0.045,
- ATR_STOP:1.5,
+/* risk */
+MIN_STOP:0.025,
+MAX_STOP:0.045,
+ATR_STOP:1.5,
 
- TP:0.06,
+TP:0.06,
 
- BE_ACT:0.03,
- TRAIL_ACT:0.025,
- TRAIL:0.018,
+TRAIL_ACT:0.025,
+TRAIL:0.018,
 
- /* allocation */
- MAX_ALLOC:1.00,
- MIN_ALLOC:10,
+BE_ACT:0.03,
 
- /* entry */
- ENTRY:72,
- STRONG:82,
- BEAR_ENTRY:85,
+/* IMPORTANT:
+   V6.2.2 can use the whole available paper account.
+*/
+MAX_ALLOC:1.00,
 
- /* protection */
- DAILY:5,
- COOLDOWN:30*60*1000,
+ENTRY:72,
+STRONG:82,
+BEAR_ENTRY:85,
 
- /* history */
- HISTORY:180,
+DAILY:5,
 
- /* storage */
- KEY:"novaPaperV63",
+COOLDOWN:30*60*1000,
 
- /* automatic scan */
- SCAN_MS:120000,
+HISTORY:240,
 
- /* API */
- REQUEST_GAP:450,
- REQUEST_TIMEOUT:9000,
- MAX_RETRIES:3,
+KEY:"novaPaperV622",
 
- /* candle counts */
- CANDLE_LIMIT:200
+/* normal scan */
+SCAN_MS:60000,
+
+/* candles are refreshed less often */
+CANDLE_CACHE_MS:5*60*1000,
+
+/* FX reference refresh */
+FX_CACHE_MS:10*60*1000,
+
+/* request safety */
+REQUEST_TIMEOUT:9000,
+RETRIES:2
 
 };
 
 
-/* =========================================================
-   FOCUSED UNIVERSE
-   BTC = benchmark
-   ETH/SOL/LINK/XRP = candidates
-   ========================================================= */
+/* ------------------------------------------------------------
+   ONLY FIVE TRADEABLE ASSETS
+   ------------------------------------------------------------ */
 
 const ASSETS = [
 
- {
-  symbol:"BTC",
-  cg:"bitcoin",
-  binance:["BTCGBP","BTCUSDT"],
-  coinbase:["BTC-GBP"],
-  terms:["bitcoin","btc"]
- },
+{
+symbol:"BTC",
+binance:"BTCUSDT",
+terms:["bitcoin","btc"]
+},
 
- {
-  symbol:"ETH",
-  cg:"ethereum",
-  binance:["ETHGBP","ETHUSDT"],
-  coinbase:["ETH-GBP"],
-  terms:["ethereum","eth"]
- },
+{
+symbol:"ETH",
+binance:"ETHUSDT",
+terms:["ethereum","eth"]
+},
 
- {
-  symbol:"SOL",
-  cg:"solana",
-  binance:["SOLGBP","SOLUSDT"],
-  coinbase:["SOL-GBP"],
-  terms:["solana","sol"]
- },
+{
+symbol:"SOL",
+binance:"SOLUSDT",
+terms:["solana","sol"]
+},
 
- {
-  symbol:"LINK",
-  cg:"chainlink",
-  binance:["LINKGBP","LINKUSDT"],
-  coinbase:["LINK-GBP"],
-  terms:["chainlink","link"]
- },
+{
+symbol:"LINK",
+binance:"LINKUSDT",
+terms:["chainlink","link"]
+},
 
- {
-  symbol:"XRP",
-  cg:"ripple",
-  binance:["XRPGBP","XRPUSDT"],
-  coinbase:["XRP-GBP"],
-  terms:["xrp","ripple"]
- }
+{
+symbol:"XRP",
+binance:"XRPUSDT",
+terms:["xrp","ripple"]
+}
 
 ];
 
 
-/* =========================================================
+/* ------------------------------------------------------------
    STATE
-   ========================================================= */
+   ------------------------------------------------------------ */
 
 function fresh(){
 
- return {
+return{
 
-  cash:CFG.START,
+cash:CFG.START,
 
-  position:null,
+position:null,
 
-  realized:0,
-  fees:0,
+realized:0,
 
-  trades:[],
+fees:0,
 
-  history:{},
+trades:[],
 
-  regime:"WAITING",
-  confidence:0,
+history:{},
 
-  equityPeak:CFG.START,
-  maxDD:0,
+regime:"BUILDING DATA",
 
-  lastScan:0,
+confidence:0,
 
-  cooldownUntil:0,
+equityPeak:CFG.START,
 
-  decision:"WAIT — no decision yet.",
+maxDD:0,
 
-  detail:"Nova is waiting for sufficient confirmation.",
+lastScan:0,
 
-  strategy:"NONE",
+cooldownUntil:0,
 
-  strategyDetail:"No active setup.",
+decision:"WAIT — collecting market data",
 
-  psych:{
-   fomo:0,
-   panic:0,
-   herding:0,
-   crowding:0,
-   narrative:0,
-   label:"NEUTRAL"
-  },
+detail:"Nova is waiting for enough reliable market data.",
 
-  bullWhy:"Waiting.",
-  bearWhy:"Waiting.",
+strategy:"NONE",
 
-  dataSource:"NONE",
+strategyDetail:"No active setup.",
 
-  news:[]
+psych:{
+fomo:0,
+panic:0,
+herding:0,
+crowding:0,
+narrative:0,
+label:"NEUTRAL"
+},
 
- };
+bullWhy:"Waiting.",
+
+bearWhy:"Waiting.",
+
+fx:{
+gbpPerUsd:null,
+time:0
+},
+
+news:[]
+
+};
 
 }
 
@@ -688,434 +471,611 @@ function fresh(){
 let state;
 
 try{
- state=JSON.parse(localStorage.getItem(CFG.KEY)||"null")||fresh();
+
+state=JSON.parse(localStorage.getItem(CFG.KEY)||"null")||fresh();
+
 }catch(e){
- state=fresh();
+
+state=fresh();
+
 }
+
 
 let lastMarkets=[];
 let newsItems=[];
 let scanBusy=false;
-let lastRequest=0;
-let binanceSymbols=null;
 
 
-/* =========================================================
-   HELPERS
-   ========================================================= */
+/* ------------------------------------------------------------
+   BASIC HELPERS
+   ------------------------------------------------------------ */
 
 function save(){
 
- localStorage.setItem(
-  CFG.KEY,
-  JSON.stringify(state)
- );
+try{
+
+localStorage.setItem(CFG.KEY,JSON.stringify(state));
+
+}catch(e){}
 
 }
+
 
 function money(x){
 
- return "£"+Number(x||0).toFixed(2);
+return "£"+Number(x||0).toFixed(2);
 
 }
+
 
 function pct(x){
 
- return (x>=0?"+":"")+Number(x||0).toFixed(2)+"%";
+return (x>=0?"+":"")+Number(x||0).toFixed(2)+"%";
 
 }
+
 
 function clamp(x,a,b){
 
- return Math.max(a,Math.min(b,x));
+return Math.max(a,Math.min(b,x));
 
 }
+
 
 function avg(a){
 
- return a.length
-  ? a.reduce((s,x)=>s+x,0)/a.length
-  : 0;
+return a.length
+?a.reduce((s,x)=>s+x,0)/a.length
+:0;
 
 }
+
 
 function esc(s){
 
- return String(s??"").replace(
-  /[&<>"']/g,
-  c=>({
-   "&":"&amp;",
-   "<":"&lt;",
-   ">":"&gt;",
-   "\"":"&quot;",
-   "'":"&#39;"
-  }[c])
- );
+return String(s??"").replace(/[&<>"']/g,c=>({
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+"\"":"&quot;",
+"'":"&#39;"
+
+}[c]));
 
 }
+
 
 function sleep(ms){
 
- return new Promise(r=>setTimeout(r,ms));
+return new Promise(resolve=>setTimeout(resolve,ms));
 
 }
 
 
-/* =========================================================
-   RATE-LIMIT SAFE REQUEST
-   ========================================================= */
+/* ------------------------------------------------------------
+   SAFE FETCH WITH RETRIES
+   ------------------------------------------------------------ */
 
-async function fetchJSON(url,ms=CFG.REQUEST_TIMEOUT,retry=0){
+async function fetchJSON(url,timeout=CFG.REQUEST_TIMEOUT,retries=CFG.RETRIES){
 
- const wait=Math.max(
-  0,
-  CFG.REQUEST_GAP-(Date.now()-lastRequest)
- );
+let lastErr;
 
- if(wait) await sleep(wait);
+for(let attempt=0;attempt<=retries;attempt++){
 
- lastRequest=Date.now();
+const controller=new AbortController();
 
- const ac=new AbortController();
+const timer=setTimeout(
+()=>controller.abort(),
+timeout
+);
 
- const tm=setTimeout(
-  ()=>ac.abort(),
-  ms
- );
+try{
 
- try{
+const response=await fetch(url,{
+cache:"no-store",
+signal:controller.signal,
+headers:{
+"Accept":"application/json"
+}
+});
 
-  const r=await fetch(
-   url,
-   {
-    cache:"no-store",
-    signal:ac.signal,
-    headers:{
-     "Accept":"application/json"
-    }
-   }
-  );
+clearTimeout(timer);
 
-  if(r.status===429){
+if(response.status===429){
 
-   if(retry<CFG.MAX_RETRIES){
+if(attempt<retries){
 
-    const retryAfter=
-     Number(r.headers.get("Retry-After")||0);
+await sleep(800*Math.pow(2,attempt));
 
-    const delay=
-     Math.max(
-      retryAfter*1000,
-      1500*Math.pow(2,retry)
-     );
+continue;
 
-    await sleep(delay);
+}
 
-    return fetchJSON(url,ms,retry+1);
+throw new Error("HTTP 429 rate limited");
 
-   }
+}
 
-   throw Error("HTTP 429 — rate limited");
+if(!response.ok){
 
-  }
+throw new Error("HTTP "+response.status);
 
-  if(!r.ok){
+}
 
-   throw Error("HTTP "+r.status);
+return await response.json();
 
-  }
+}catch(err){
 
-  return await r.json();
+clearTimeout(timer);
 
- }finally{
+lastErr=err;
 
-  clearTimeout(tm);
+if(attempt<retries){
 
- }
+await sleep(600*Math.pow(2,attempt));
+
+}
+
+}
+
+}
+
+throw lastErr||new Error("Request failed");
 
 }
 
 
-/* =========================================================
-   BINANCE SYMBOL DISCOVERY
-   ========================================================= */
+/* ------------------------------------------------------------
+   BINANCE PUBLIC DATA
+   ------------------------------------------------------------ */
 
-async function loadBinanceSymbols(){
+const BINANCE_BASES=[
 
- if(binanceSymbols) return binanceSymbols;
+"https://data-api.binance.vision",
+"https://api.binance.com"
 
- const urls=[
+];
 
-  "https://data-api.binance.vision/api/v3/exchangeInfo",
 
-  "https://api.binance.com/api/v3/exchangeInfo"
+async function binanceJSON(path){
 
- ];
+let last;
 
- for(const u of urls){
+for(const base of BINANCE_BASES){
 
-  try{
+try{
 
-   const d=await fetchJSON(u,12000);
+return await fetchJSON(base+path);
 
-   binanceSymbols=new Set(
-    (d.symbols||[])
-     .filter(x=>x.status==="TRADING")
-     .map(x=>x.symbol)
-   );
+}catch(e){
 
-   return binanceSymbols;
+last=e;
 
-  }catch(e){}
+}
 
- }
+}
 
- binanceSymbols=new Set();
-
- return binanceSymbols;
+throw last||new Error("Binance unavailable");
 
 }
 
 
-/* =========================================================
-   BINANCE KLINES
-   ========================================================= */
+/* ------------------------------------------------------------
+   CANDLE PARSER
+   ------------------------------------------------------------ */
 
-async function binanceKlines(symbol,interval){
+function parseKlines(rows){
 
- const bases=[
+if(!Array.isArray(rows))return[];
 
-  "https://data-api.binance.vision",
+return rows.map(x=>({
 
-  "https://api.binance.com"
+t:Number(x[0]),
 
- ];
+open:Number(x[1]),
 
- let lastErr=null;
+high:Number(x[2]),
 
- for(const base of bases){
+low:Number(x[3]),
 
-  try{
+close:Number(x[4]),
 
-   const url=
-    base+
-    "/api/v3/klines?symbol="+
-    encodeURIComponent(symbol)+
-    "&interval="+
-    interval+
-    "&limit="+
-    CFG.CANDLE_LIMIT;
+volume:Number(x[5])
 
-   const rows=await fetchJSON(url);
-
-   if(!Array.isArray(rows)||!rows.length){
-
-    throw Error("No candles");
-
-   }
-
-   return rows.map(x=>({
-
-    t:+x[0],
-    open:+x[1],
-    high:+x[2],
-    low:+x[3],
-    close:+x[4],
-    volume:+x[5]
-
-   }));
-
-  }catch(e){
-
-   lastErr=e;
-
-  }
-
- }
-
- throw lastErr||Error("Binance candle failure");
+})).filter(x=>
+Number.isFinite(x.close)&&
+Number.isFinite(x.high)&&
+Number.isFinite(x.low)
+);
 
 }
 
 
-/* =========================================================
-   BINANCE CURRENT DATA
-   ========================================================= */
+/* ------------------------------------------------------------
+   MARKET DATA CACHE
+   ------------------------------------------------------------ */
 
-async function binanceTicker(symbol){
+const marketCache={};
 
- const bases=[
 
-  "https://data-api.binance.vision",
+async function getBinanceAsset(a){
 
-  "https://api.binance.com"
+const now=Date.now();
 
- ];
+let cached=marketCache[a.symbol];
 
- let lastErr=null;
 
- for(const base of bases){
+/*
+  Price/24h ticker is refreshed every scan.
+*/
 
-  try{
+let ticker;
 
-   const url=
-    base+
-    "/api/v3/ticker/24hr?symbol="+
-    encodeURIComponent(symbol);
+try{
 
-   const d=await fetchJSON(url);
+ticker=await binanceJSON(
+"/api/v3/ticker/24hr?symbol="+encodeURIComponent(a.binance)
+);
 
-   const p=+d.lastPrice;
+}catch(e){
 
-   if(!p) throw Error("No Binance price");
+/*
+  If Binance ticker is temporarily rate limited,
+  use cached ticker rather than destroying the scan.
+*/
 
-   return {
+if(cached?.ticker){
 
-    price:p,
-    change:+d.priceChangePercent||0,
-    high:+d.highPrice||p,
-    low:+d.lowPrice||p,
-    volume:+d.volume||0,
-    quoteVolume:+d.quoteVolume||0,
-    source:"Binance"
+ticker=cached.ticker;
 
-   };
+}else{
 
-  }catch(e){
+throw e;
 
-   lastErr=e;
-
-  }
-
- }
-
- throw lastErr||Error("Binance ticker failure");
+}
 
 }
 
 
-/* =========================================================
-   BINANCE GBP CONVERSION
-   ========================================================= */
+/*
+  Candles are only refreshed every five minutes.
+  This is the major anti-429 change.
+*/
 
-async function getUSDTGBP(){
+let c15=cached?.c15||[];
+let c1h=cached?.c1h||[];
 
- const candidates=[
+if(!cached || now-cached.time>CFG.CANDLE_CACHE_MS){
 
-  "USDTGBP",
+try{
 
-  "GBPUSDT"
+const [r15,r1h]=await Promise.all([
 
- ];
+binanceJSON(
+"/api/v3/klines?symbol="+encodeURIComponent(a.binance)+"&interval=15m&limit=120"
+),
 
- for(const s of candidates){
+binanceJSON(
+"/api/v3/klines?symbol="+encodeURIComponent(a.binance)+"&interval=1h&limit=120"
+)
 
-  try{
+]);
 
-   const d=await binanceTicker(s);
+c15=parseKlines(r15);
+c1h=parseKlines(r1h);
 
-   if(s==="USDTGBP"){
+}catch(e){
 
-    return d.price;
+if(!c15.length){
 
-   }
+throw e;
 
-   if(s==="GBPUSDT" && d.price){
+}
 
-    return 1/d.price;
-
-   }
-
-  }catch(e){}
-
- }
-
- /* CoinGecko fallback */
-
- try{
-
-  const d=await fetchJSON(
-   "https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=gbp",
-   9000
-  );
-
-  if(d?.tether?.gbp){
-
-   return +d.tether.gbp;
-
-  }
-
- }catch(e){}
-
- return null;
+}
 
 }
 
 
-/* =========================================================
-   COINBASE FALLBACK
-   ========================================================= */
+const price=Number(ticker.lastPrice);
 
-async function coinbaseTicker(pair){
+const change=Number(ticker.priceChangePercent||0);
 
- const d=await fetchJSON(
-  "https://api.exchange.coinbase.com/products/"+
-  encodeURIComponent(pair)+
-  "/stats"
- );
+if(!Number.isFinite(price)||price<=0){
 
- const p=+d.last;
-
- if(!p) throw Error("No Coinbase price");
-
- return {
-
-  price:p,
-  open:+d.open,
-  high:+d.high,
-  low:+d.low,
-  change:+d.open
-   ? (p/+d.open-1)*100
-   :0,
-  volume:+d.volume||0,
-  source:"Coinbase"
-
- };
+throw new Error("Invalid Binance price");
 
 }
 
 
-async function coinbaseCandles(pair,granularity){
+marketCache[a.symbol]={
 
- const d=await fetchJSON(
-  "https://api.exchange.coinbase.com/products/"+
-  encodeURIComponent(pair)+
-  "/candles?granularity="+
-  granularity
- );
+time:now,
 
- if(!Array.isArray(d)||!d.length){
+ticker,
 
-  throw Error("No Coinbase candles");
+c15,
 
- }
+c1h
 
- return d
-  .sort((a,b)=>a[0]-b[0])
-  .map(x=>({
+};
 
-   t:x[0]*1000,
-   low:+x[1],
-   high:+x[2],
-   open:+x[3],
-   close:+x[4],
-   volume:+x[5]
 
-  }));
+return{
+
+...a,
+
+priceUSD:price,
+
+change,
+
+highUSD:Number(ticker.highPrice||price),
+
+lowUSD:Number(ticker.lowPrice||price),
+
+c15,
+
+c1h,
+
+source:"Binance",
+
+quality:c15.length>=60?"LIVE":"BUILDING"
+
+};
 
 }
 
 
-/* =========================================================
-   COINGECKO FALLBACK
-   ========================================================= 
+/* ------------------------------------------------------------
+   USD -> GBP REFERENCE
+   ------------------------------------------------------------ */
+
+/*
+  We use BTCUSDT and BTCGBP where available.
+  BTCGBP is requested only occasionally.
+  This avoids CoinGecko's 429 problem.
+*/
+
+async function getGBPPerUSD(){
+
+const now=Date.now();
+
+if(
+state.fx?.gbpPerUsd &&
+now-state.fx.time<CFG.FX_CACHE_MS
+){
+
+return state.fx.gbpPerUsd;
+
+}
+
+
+/*
+  Try Binance BTCGBP.
+*/
+
+try{
+
+const [btcUsd,btcGbp]=await Promise.all([
+
+binanceJSON(
+"/api/v3/ticker/price?symbol=BTCUSDT"
+),
+
+binanceJSON(
+"/api/v3/ticker/price?symbol=BTCGBP"
+)
+
+]);
+
+const u=Number(btcUsd.price);
+const g=Number(btcGbp.price);
+
+if(u>0&&g>0){
+
+state.fx={
+gbpPerUsd:g/u,
+time:now
+};
+
+save();
+
+return g/u;
+
+}
+
+}catch(e){}
+
+
+/*
+  Cached value remains valid if Binance BTCGBP
+  temporarily fails.
+*/
+
+if(state.fx?.gbpPerUsd){
+
+return state.fx.gbpPerUsd;
+
+}
+
+
+/*
+  Last-resort public FX endpoint.
+  Only called when no cached FX exists.
+*/
+
+try{
+
+const fx=await fetchJSON(
+"https://api.frankfurter.app/latest?from=USD&to=GBP",
+8000,
+1
+);
+
+const rate=Number(fx?.rates?.GBP);
+
+if(rate>0){
+
+state.fx={
+gbpPerUsd:rate,
+time:now
+};
+
+save();
+
+return rate;
+
+}
+
+}catch(e){}
+
+
+/*
+  Do not invent a market price.
+  0 means GBP conversion unavailable.
+*/
+
+return null;
+
+}
+
+
+/* ------------------------------------------------------------
+   TECHNICAL INDICATORS
+   ------------------------------------------------------------ */
+
+function ema(a,n){
+
+if(a.length<n)return null;
+
+const k=2/(n+1);
+
+let e=avg(a.slice(0,n));
+
+for(let i=n;i<a.length;i++){
+
+e=a[i]*k+e*(1-k);
+
+}
+
+return e;
+
+}
+
+
+function rsi(a,n=14){
+
+if(a.length<n+1)return null;
+
+let gain=0;
+let loss=0;
+
+for(let i=1;i<=n;i++){
+
+const d=a[i]-a[i-1];
+
+if(d>0)gain+=d;
+else loss-=d;
+
+}
+
+let ag=gain/n;
+let al=loss/n;
+
+for(let i=n+1;i<a.length;i++){
+
+const d=a[i]-a[i-1];
+
+ag=((ag*(n-1))+(d>0?d:0))/n;
+
+al=((al*(n-1))+(d<0?-d:0))/n;
+
+}
+
+if(al===0)return 100;
+
+return 100-(100/(1+ag/al));
+
+}
+
+
+function atr(c,n=14){
+
+if(c.length<n+1)return null;
+
+const tr=[];
+
+for(let i=1;i<c.length;i++){
+
+tr.push(
+
+Math.max(
+
+c[i].high-c[i].low,
+
+Math.abs(c[i].high-c[i-1].close),
+Math.abs(c[i].low-c[i-1].close)
+
+)
+
+);
+
+}
+
+return avg(tr.slice(-n));
+
+}
+
+
+function macd(a){
+
+if(a.length<35)return null;
+
+const e12=ema(a,12);
+const e26=ema(a,26);
+
+if(e12==null||e26==null)return null;
+
+return e12-e26;
+
+}
+
+
+function candlesAgg(c,step){
+
+if(!c.length)return[];
+
+const out=[];
+
+for(let i=0;i<c.length;i+=step){
+
+const s=c.slice(i,i+step);
+
+if(s.length<step)continue;
+
+out.push({
+
+t:s[0].t,
+
+open:s[0].open,
+
+high:Math.max(...s.map(x=>x.high)),
+
+low:Math.min(...s.map(x=>x.low)),
+
+close:s[s.length-1].close,
+
+volume:s.reduce((z,x)=>z+x.volume,0)
+
+});
+
+}
+
+return out;
+
+}
+
+
+/* ------------------------------------------------------------
+   HISTORY
+   ------------------
