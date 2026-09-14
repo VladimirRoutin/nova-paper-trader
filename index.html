@@ -1,1081 +1,1218 @@
 <!doctype html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#070b14">
-<title>Nova Paper Trader V6.2.2</title><style>
-:root{
---bg:#070b14;--p:#10182a;--p2:#0c1424;--line:#263656;
---text:#edf4ff;--muted:#91a1bd;--blue:#4ea1ff;--cyan:#4de1ff;
---green:#35df91;--red:#ff6072;--amber:#ffc857;--purple:#9b7cff
-}
-*{box-sizing:border-box}
-body{
-margin:0;background:radial-gradient(circle at 10% 0,#152b52 0,#070b14 38%);
-color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
-}
-.wrap{max-width:1500px;margin:auto;padding:12px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.brand{display:flex;gap:11px;align-items:center}
-.logo{
-width:45px;height:45px;border-radius:14px;display:grid;place-items:center;
-font-weight:950;font-size:21px;background:linear-gradient(135deg,var(--blue),var(--purple));
-box-shadow:0 0 28px #4ea1ff44
-}
-h1{margin:0;font-size:22px}
-.sub{font-size:11px;color:var(--muted);margin-top:3px}
-.buttons{display:flex;gap:8px;flex-wrap:wrap}
-button{
-border:0;border-radius:10px;padding:11px 14px;font-weight:850;cursor:pointer;
-background:var(--blue);color:#06101e
-}
-button.secondary{background:#202e49;color:#fff}
-button:disabled{opacity:.5;cursor:not-allowed}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
-.card,.panel{
-background:linear-gradient(180deg,var(--p),#0d1525);
-border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 30px #0004
-}
-.card{padding:11px}
-.panel{padding:12px;margin:9px 0}
-.panel h2{font-size:14px;margin:0 0 9px}
-.label{
-font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em
-}
-.value{font-size:20px;font-weight:900;margin-top:3px}
-.small{font-size:10px;color:var(--muted)}
-.regime{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.regimeName{font-size:18px;font-weight:950}
-.bar{
-height:8px;background:#202c45;border-radius:10px;overflow:hidden;margin-top:8px
-}
-.fill{
-height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));
-transition:.35s
-}
-.decision{font-size:17px;font-weight:900;line-height:1.4}
-.reason{line-height:1.5;color:#c6d2e7;font-size:11px}
-.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
-.mini{
-background:var(--p2);border:1px solid var(--line);border-radius:10px;padding:8px
-}
-.mini b{display:block;font-size:14px;margin-top:3px}
-.position{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
-.tablewrap{overflow:auto}
-table{width:100%;min-width:1350px;border-collapse:collapse}
-th,td{
-padding:7px 5px;border-bottom:1px solid #1e2a42;text-align:left;
-font-size:10px;white-space:nowrap
-}
-th{
-color:var(--muted);font-size:8px;letter-spacing:.06em;text-transform:uppercase;
-background:#10182a;position:sticky;top:0
-}
-.good{color:var(--green)}
-.bad{color:var(--red)}
-.warn{color:var(--amber)}
-.blue{color:var(--blue)}
-.pill{
-display:inline-block;padding:3px 6px;border-radius:99px;background:#1a2944;
-border:1px solid #2c4165;font-size:8px;font-weight:850
-}
-.score{font-size:13px;font-weight:950}
-.signal{font-weight:950}
-.buy{color:var(--green)}
-.watch{color:var(--amber)}
-.avoid{color:var(--red)}
-.news{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
-.newsItem{
-background:var(--p2);border:1px solid var(--line);border-radius:10px;padding:8px
-}
-.newsTitle{font-size:10px;font-weight:800;line-height:1.35}
-.newsMeta{font-size:8px;color:var(--muted);margin-top:4px}
-.log{max-height:300px;overflow:auto}
-.logrow{
-padding:7px 0;border-bottom:1px solid var(--line);
-font-size:10px;line-height:1.45
-}
-.notice{font-size:9px;color:var(--muted);line-height:1.55}
-.two{display:grid;grid-template-columns:1.2fr .8fr;gap:9px}
-.psych{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
-.meter{
-height:7px;background:#202c45;border-radius:8px;overflow:hidden;margin-top:5px
-}
-.meter i{display:block;height:100%;width:0;background:var(--blue)}
-.why{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
-.whyBox{
-background:var(--p2);border:1px solid var(--line);border-radius:10px;padding:8px
-}
-.err{
-background:#2b1118;border:1px solid #6b2733;color:#ffd8dd;padding:8px;
-border-radius:9px;font-size:10px;display:none;margin-top:8px
-}
-.dataGood{color:var(--green)}
-.dataBad{color:var(--red)}
-.dataBuilding{color:var(--amber)}
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nova Paper Trader V7</title>
+<style>
+body{margin:0;background:#0b1020;color:#eef2ff;font:14px system-ui}
+main{max-width:1100px;margin:auto;padding:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.card{background:#141b30;border:1px solid #283454;border-radius:14px;padding:14px;margin:10px 0}
+.big{font-size:25px;font-weight:700}
+.muted{color:#9aa7c0}
+.ok{color:#7ee787}.bad{color:#ff7b72}.warn{color:#f2cc60}
+button{background:#29447e;color:#fff;border:0;border-radius:9px;padding:10px 14px;margin:3px}
+table{width:100%;border-collapse:collapse}
+td,th{padding:7px;border-bottom:1px solid #293452;text-align:left;font-size:12px}
+.pill{display:inline-block;padding:5px 9px;border-radius:99px;background:#293452}
+pre{white-space:pre-wrap;font-size:12px}
+</style>
+</head>
 
-@media(max-width:1000px){
-.grid{grid-template-columns:repeat(2,1fr)}
-.position{grid-template-columns:repeat(3,1fr)}
-.kpis{grid-template-columns:repeat(3,1fr)}
-.psych{grid-template-columns:repeat(3,1fr)}
-.two{grid-template-columns:1fr}
-}
-@media(max-width:560px){
-.wrap{padding:8px}
-.grid{gap:6px}
-.card{padding:8px}
-.value{font-size:17px}
-.position{grid-template-columns:repeat(2,1fr)}
-.kpis{grid-template-columns:repeat(2,1fr)}
-.psych{grid-template-columns:repeat(2,1fr)}
-.news,.why{grid-template-columns:1fr}
-h1{font-size:18px}
-.decision{font-size:15px}
-}
-</style></head><body>
-<div class="wrap"><div class="top">
-<div class="brand">
-<div class="logo">N</div>
-<div>
-<h1>Nova Paper Trader V6.2.2</h1>
-<div class="sub">£100 virtual account • adaptive multi-strategy • psychology • Binance public market data</div>
-</div>
-</div><div class="buttons">
-<button id="scanBtn" onclick="scan()">SCAN MARKET NOW</button>
-<button class="secondary" onclick="resetPaper()">RESET £100</button>
-</div>
-</div><div class="grid"><div class="card">
-<div class="label">Equity</div>
-<div id="equity" class="value">£100.00</div>
-<div class="small">Starting £100.00</div>
-</div><div class="card">
-<div class="label">Cash</div>
-<div id="cash" class="value">£100.00</div>
-<div id="invested" class="small">Invested £0.00</div>
-</div><div class="card">
-<div class="label">Net P/L</div>
-<div id="pnl" class="value">£0.00</div>
-<div id="pnlpct" class="small">0.00%</div>
-</div><div class="card">
-<div class="label">Position</div>
-<div id="pos" class="value">NONE</div>
-<div id="posSub" class="small">No open position</div>
-</div></div><div class="panel"><div class="regime"><div>
-<div class="label">Market Regime</div>
-<div id="regime" class="regimeName">BUILDING DATA</div>
-<div id="regimeText" class="small">
-Waiting for BTC trend and volatility data.
-</div>
-</div><div style="text-align:right">
-<div class="label">Confidence</div>
-<strong id="confidence">0%</strong>
-</div></div><div class="bar">
-<div id="confidenceBar" class="fill"></div>
-</div></div><div class="two"><div class="panel">
-<h2>Nova's Current Decision</h2>
-<div id="decision" class="decision">WAIT — collecting market data</div>
-<div id="decisionDetail" class="reason" style="margin-top:5px">
-Nova will not force a trade while data is incomplete.
-</div>
-<div id="errorBox" class="err"></div>
-</div><div class="panel">
-<h2>Active Strategy</h2>
-<div id="strategy" class="decision">NONE</div>
-<div id="strategyDetail" class="reason" style="margin-top:5px">
-No active setup.
-</div>
-</div></div><div class="panel">
-<h2>Human Behaviour Engine</h2><div class="psych"><div class="mini">
-<div class="label">FOMO</div>
-<b id="fomo">0</b>
-<div class="meter"><i id="fomoBar"></i></div>
-</div><div class="mini">
-<div class="label">Panic</div>
-<b id="panic">0</b>
-<div class="meter"><i id="panicBar"></i></div>
-</div><div class="mini">
-<div class="label">Herding</div>
-<b id="herding">0</b>
-<div class="meter"><i id="herdingBar"></i></div>
-</div><div class="mini">
-<div class="label">Crowding</div>
-<b id="crowding">0</b>
-<div class="meter"><i id="crowdingBar"></i></div>
-</div><div class="mini">
-<div class="label">Narrative Heat</div>
-<b id="narrative">0</b>
-<div class="meter"><i id="narrativeBar"></i></div>
-</div><div class="mini">
-<div class="label">Behaviour</div>
-<b id="behaviour">NEUTRAL</b>
-<div class="small">composite</div>
-</div></div>
-</div><div class="panel">
-<h2>Performance</h2><div class="kpis"><div class="mini">
-<div class="label">Closed Trades</div>
-<b id="trades">0</b>
-</div><div class="mini">
-<div class="label">Win Rate</div>
-<b id="winrate">0%</b>
-</div><div class="mini">
-<div class="label">Realised P/L</div>
-<b id="realized">£0.00</b>
-</div><div class="mini">
-<div class="label">Fees</div>
-<b id="fees">£0.00</b>
-</div><div class="mini">
-<div class="label">Best Trade</div>
-<b id="best">£0.00</b>
-</div><div class="mini">
-<div class="label">Worst Trade</div>
-<b id="worst">£0.00</b>
-</div></div>
-</div><div class="panel">
-<h2>Risk Monitor</h2><div class="kpis"><div class="mini">
-<div class="label">Current DD</div>
-<b id="dd">0.00%</b>
-</div><div class="mini">
-<div class="label">Max DD</div>
-<b id="maxdd">0.00%</b>
-</div><div class="mini">
-<div class="label">Daily Trades</div>
-<b id="daily">0 / 5</b>
-</div><div class="mini">
-<div class="label">Cooldown</div>
-<b id="cooldown">READY</b>
-</div><div class="mini">
-<div class="label">Data Health</div>
-<b id="dataHealth">—</b>
-</div><div class="mini">
-<div class="label">Last Scan</div>
-<b id="lastScan">—</b>
-</div></div>
-</div><div class="panel">
-<h2>Open Position</h2>
-<div id="positionBox" class="position">
-<div class="small">None</div>
-</div>
-</div><div class="panel"><h2>Market Ranking</h2><div id="status" class="small" style="margin-bottom:8px">
-Starting Binance market scanner…
-</div><div class="tablewrap"><table><thead>
-<tr>
-<th>Asset</th>
-<th>Price GBP</th>
-<th>24h</th>
-<th>RSI</th>
-<th>Trend</th>
-<th>1h</th>
-<th>4h</th>
-<th>RS BTC</th>
-<th>Volume</th>
-<th>FOMO</th>
-<th>Psych</th>
-<th>News</th>
-<th>Strategy</th>
-<th>Score</th>
-<th>Signal</th>
-<th>Data</th>
-</tr>
-</thead><tbody id="markets">
-<tr>
-<td colspan="16">Waiting for scan…</td>
-</tr>
-</tbody></table></div>
-</div><div class="panel"><h2>Why?</h2><div id="why" class="why"><div class="whyBox">
-<div class="label">Bullish Evidence</div>
-<div id="bullWhy" class="reason">Waiting.</div>
-</div><div class="whyBox">
-<div class="label">Bearish / Contradicting Evidence</div>
-<div id="bearWhy" class="reason">Waiting.</div>
-</div></div></div><div class="panel"><h2>News Intelligence</h2><div id="newsStatus" class="small" style="margin-bottom:8px">
-News is secondary confirmation. Hard risk controls always win.
-</div><div id="news" class="news">
-<div class="newsItem">
-<div class="small">No news loaded yet.</div>
-</div>
-</div></div><div class="panel"><h2>Trade Log</h2><div id="log" class="log">
-<div class="small">No trades yet.</div>
-</div></div><div class="panel notice"><strong>PAPER TRADING ONLY.</strong>
-V6.2.2 cannot place real orders, withdraw funds or access private exchange accounts.
-It uses public market-data endpoints only. Data can be delayed, unavailable or rate-limited.
-Nova favours WAIT rather than inventing missing information. Technical and behavioural signals
-are statistical proxies, not predictions. Fees and slippage are simulated.
+<body>
+<main>
 
-</div></div><script>
+<h1>Nova Paper Trader V7</h1>
+<div class="muted">
+Market radar • decision engine • psychology proxies • paper only
+</div>
 
-/* ============================================================
-   NOVA PAPER TRADER V6.2.2
-   GitHub Pages compatible / browser only
-   ============================================================ */
+<p>
+<button id="scan">SCAN NOW</button>
+<button id="reset">RESET £100</button>
+<span id="status" class="pill">Starting</span>
+</p>
+
+<div class="grid">
+
+<div class="card">
+<span class="muted">Equity</span>
+<div id="equity" class="big">£100.00</div>
+<span id="cash">Cash £100.00</span>
+</div>
+
+<div class="card">
+<span class="muted">Decision</span>
+<div id="decision" class="big">WAIT</div>
+<span id="confidence">0%</span>
+</div>
+
+<div class="card">
+<span class="muted">Regime</span>
+<div id="regime" class="big">LOADING</div>
+<span id="regimeWhy" class="muted"></span>
+</div>
+
+<div class="card">
+<span class="muted">Position</span>
+<div id="position" class="big">FLAT</div>
+<span id="posInfo" class="muted"></span>
+</div>
+
+</div>
+
+<section class="card">
+<h2>Market Radar</h2>
+<div id="radar">Loading…</div>
+</section>
+
+<section class="card">
+<h2>Decision evidence</h2>
+<div id="evidence">No decision yet.</div>
+</section>
+
+<section class="card">
+<h2>Psychology</h2>
+<div id="psych">No analysis yet.</div>
+</section>
+
+<section class="card">
+<h2>News / narrative</h2>
+<div id="news">
+Not connected. Nova will not invent headlines.
+</div>
+</section>
+
+<section class="card">
+<h2>Trade log</h2>
+<div id="log">No trades.</div>
+</section>
+
+<section class="card">
+<h2>System health</h2>
+<pre id="system">Starting…</pre>
+</section>
+
+</main>
+
+<script>
+'use strict';
+
+/* =========================================================
+   NOVA PAPER TRADER V7
+   ========================================================= */
 
 const CFG = {
+    START: 100,
+    FEE: 0.004,
+    SLIP: 0.0012,
 
-START:100,
+    SCAN_MS: 180000,
 
-/* simulated costs */
-FEE:0.004,
-SLIP:0.0015,
+    RADAR_LIMIT: 18,
+    DEEP: 5,
+    LOOKBACK: 180,
 
-/* risk */
-MIN_STOP:0.025,
-MAX_STOP:0.045,
-ATR_STOP:1.5,
+    STORE: 'nova-paper-v7',
 
-TP:0.06,
+    MAX_ALLOCATION: 1,
+    MAX_LOSS: 0.08,
 
-TRAIL_ACT:0.025,
-TRAIL:0.018,
-
-BE_ACT:0.03,
-
-/* IMPORTANT:
-   V6.2.2 can use the whole available paper account.
-*/
-MAX_ALLOC:1.00,
-
-ENTRY:72,
-STRONG:82,
-BEAR_ENTRY:85,
-
-DAILY:5,
-
-COOLDOWN:30*60*1000,
-
-HISTORY:240,
-
-KEY:"novaPaperV622",
-
-/* normal scan */
-SCAN_MS:60000,
-
-/* candles are refreshed less often */
-CANDLE_CACHE_MS:5*60*1000,
-
-/* FX reference refresh */
-FX_CACHE_MS:10*60*1000,
-
-/* request safety */
-REQUEST_TIMEOUT:9000,
-RETRIES:2
-
+    MIN_CONF: 78
 };
 
 
-/* ------------------------------------------------------------
-   ONLY FIVE TRADEABLE ASSETS
-   ------------------------------------------------------------ */
+/* =========================================================
+   MARKET UNIVERSE
+   ========================================================= */
 
-const ASSETS = [
-
-{
-symbol:"BTC",
-binance:"BTCUSDT",
-terms:["bitcoin","btc"]
-},
-
-{
-symbol:"ETH",
-binance:"ETHUSDT",
-terms:["ethereum","eth"]
-},
-
-{
-symbol:"SOL",
-binance:"SOLUSDT",
-terms:["solana","sol"]
-},
-
-{
-symbol:"LINK",
-binance:"LINKUSDT",
-terms:["chainlink","link"]
-},
-
-{
-symbol:"XRP",
-binance:"XRPUSDT",
-terms:["xrp","ripple"]
-}
-
+const SYMBOLS = [
+    'BTCUSDT',
+    'ETHUSDT',
+    'SOLUSDT',
+    'LINKUSDT',
+    'XRPUSDT',
+    'BNBUSDT',
+    'SUIUSDT',
+    'ADAUSDT',
+    'AVAXUSDT',
+    'DOGEUSDT',
+    'TONUSDT',
+    'TRXUSDT',
+    'DOTUSDT',
+    'LTCUSDT',
+    'AAVEUSDT',
+    'NEARUSDT',
+    'UNIUSDT',
+    'ATOMUSDT'
 ];
 
 
-/* ------------------------------------------------------------
+/* =========================================================
+   DATA PROVIDERS
+   ========================================================= */
+
+const APIS = [
+    'https://data-api.binance.vision',
+    'https://api.binance.com'
+];
+
+
+/* =========================================================
    STATE
-   ------------------------------------------------------------ */
+   ========================================================= */
 
-function fresh(){
+const $ = x => document.getElementById(x);
 
-return{
+let scanBusy = false;
 
-cash:CFG.START,
+function fresh() {
+    return {
+        cash: CFG.START,
+        position: null,
+        log: [],
+        lastScan: 0,
+        equity: CFG.START,
+        decisions: 0
+    };
+}
 
-position:null,
+function load() {
+    try {
+        return Object.assign(
+            fresh(),
+            JSON.parse(localStorage.getItem(CFG.STORE) || '{}')
+        );
+    } catch {
+        return fresh();
+    }
+}
 
-realized:0,
+let S = load();
 
-fees:0,
 
-trades:[],
-
-history:{},
-
-regime:"BUILDING DATA",
-
-confidence:0,
-
-equityPeak:CFG.START,
-
-maxDD:0,
-
-lastScan:0,
-
-cooldownUntil:0,
-
-decision:"WAIT — collecting market data",
-
-detail:"Nova is waiting for enough reliable market data.",
-
-strategy:"NONE",
-
-strategyDetail:"No active setup.",
-
-psych:{
-fomo:0,
-panic:0,
-herding:0,
-crowding:0,
-narrative:0,
-label:"NEUTRAL"
-},
-
-bullWhy:"Waiting.",
-
-bearWhy:"Waiting.",
-
-fx:{
-gbpPerUsd:null,
-time:0
-},
-
-news:[]
-
-};
-
+function save() {
+    localStorage.setItem(
+        CFG.STORE,
+        JSON.stringify(S)
+    );
 }
 
 
-let state;
+/* =========================================================
+   DISPLAY HELPERS
+   ========================================================= */
 
-try{
+function money(x) {
+    return '£' + Number(x || 0).toFixed(2);
+}
 
-state=JSON.parse(localStorage.getItem(CFG.KEY)||"null")||fresh();
+function pct(x) {
+    return (x * 100).toFixed(1) + '%';
+}
 
-}catch(e){
-
-state=fresh();
-
+function status(t, c = '') {
+    $('status').textContent = t;
+    $('status').className = 'pill ' + c;
 }
 
 
-let lastMarkets=[];
-let newsItems=[];
-let scanBusy=false;
+/* =========================================================
+   NETWORK
+   ========================================================= */
 
+async function get(path, timeout = 8000) {
 
-/* ------------------------------------------------------------
-   BASIC HELPERS
-   ------------------------------------------------------------ */
+    for (const base of APIS) {
 
-function save(){
+        const controller = new AbortController();
 
-try{
+        const timer = setTimeout(
+            () => controller.abort(),
+            timeout
+        );
 
-localStorage.setItem(CFG.KEY,JSON.stringify(state));
+        try {
 
-}catch(e){}
+            const response = await fetch(
+                base + path,
+                {
+                    signal: controller.signal,
+                    cache: 'no-store'
+                }
+            );
 
+            clearTimeout(timer);
+
+            if (response.ok) {
+                return await response.json();
+            }
+
+            if (response.status === 429) {
+                await new Promise(
+                    resolve => setTimeout(resolve, 1200)
+                );
+            }
+
+        } catch (e) {
+
+            clearTimeout(timer);
+
+        }
+    }
+
+    throw Error(
+        'All market-data providers failed'
+    );
 }
 
 
-function money(x){
+/* =========================================================
+   CANDLE DATA
+   ========================================================= */
 
-return "£"+Number(x||0).toFixed(2);
+async function candles(
+    sym,
+    interval = '1h',
+    limit = 180
+) {
 
+    const data = await get(
+        '/api/v3/klines?symbol=' +
+        sym +
+        '&interval=' +
+        interval +
+        '&limit=' +
+        limit
+    );
+
+    if (
+        !Array.isArray(data) ||
+        data.length < 80
+    ) {
+        throw Error(
+            'Insufficient candles ' + sym
+        );
+    }
+
+    return data.map(x => ({
+        t: +x[0],
+        o: +x[1],
+        h: +x[2],
+        l: +x[3],
+        c: +x[4],
+        v: +x[5]
+    }));
 }
 
 
-function pct(x){
+/* =========================================================
+   INDICATORS
+   ========================================================= */
 
-return (x>=0?"+":"")+Number(x||0).toFixed(2)+"%";
+function ema(a, n) {
 
+    if (a.length < n) {
+        return null;
+    }
+
+    let e = a[0];
+
+    const k = 2 / (n + 1);
+
+    for (
+        let i = 1;
+        i < a.length;
+        i++
+    ) {
+        e =
+            a[i] * k +
+            e * (1 - k);
+    }
+
+    return e;
 }
 
 
-function clamp(x,a,b){
+function rsi(a, n = 14) {
 
-return Math.max(a,Math.min(b,x));
+    if (a.length < n + 1) {
+        return 50;
+    }
 
+    let gains = 0;
+    let losses = 0;
+
+    for (
+        let i = a.length - n;
+        i < a.length;
+        i++
+    ) {
+
+        const d = a[i] - a[i - 1];
+
+        if (d > 0) {
+            gains += d;
+        } else {
+            losses -= d;
+        }
+    }
+
+    if (!losses) {
+        return 100;
+    }
+
+    return 100 -
+        100 /
+        (1 + gains / losses);
 }
 
 
-function avg(a){
+function atr(d, n = 14) {
 
-return a.length
-?a.reduce((s,x)=>s+x,0)/a.length
-:0;
+    const tr = [];
 
+    for (
+        let i = 1;
+        i < d.length;
+        i++
+    ) {
+
+        tr.push(
+            Math.max(
+                d[i].h - d[i].l,
+                Math.abs(
+                    d[i].h -
+                    d[i - 1].c
+                ),
+                Math.abs(
+                    d[i].l -
+                    d[i - 1].c
+                )
+            )
+        );
+    }
+
+    return tr
+        .slice(-n)
+        .reduce(
+            (a, b) => a + b,
+            0
+        ) / n;
 }
 
 
-function esc(s){
+/* =========================================================
+   MARKET ANALYSIS
+   ========================================================= */
 
-return String(s??"").replace(/[&<>"']/g,c=>({
+function analyse(d) {
 
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-"\"":"&quot;",
-"'":"&#39;"
+    const c = d.map(x => x.c);
+    const v = d.map(x => x.v);
 
-}[c]));
+    const last = c.at(-1);
 
+    const e20 = ema(c, 20);
+    const e50 = ema(c, 50);
+    const e100 = ema(c, 100);
+
+    const a = atr(d);
+
+    const rr = rsi(c);
+
+    const mom =
+        last /
+        c[c.length - 25] -
+        1;
+
+    const volumeAverage =
+        v.slice(-21, -1)
+            .reduce(
+                (a, b) => a + b,
+                0
+            ) / 20 || 1;
+
+    const vr =
+        v.at(-1) /
+        volumeAverage;
+
+    const hi =
+        Math.max(
+            ...c.slice(-48)
+        );
+
+    const lo =
+        Math.min(
+            ...c.slice(-48)
+        );
+
+    const range =
+        (last - lo) /
+        (hi - lo || 1);
+
+    let score = 0;
+
+    const why = [];
+    const opp = [];
+
+
+    /* PRICE / EMA */
+
+    if (last > e20) {
+
+        score += 12;
+        why.push(
+            'above EMA20'
+        );
+
+    } else {
+
+        score -= 10;
+        opp.push(
+            'below EMA20'
+        );
+    }
+
+
+    /* SHORT / MEDIUM TREND */
+
+    if (e20 > e50) {
+
+        score += 16;
+        why.push(
+            'EMA20 > EMA50'
+        );
+
+    } else {
+
+        score -= 14;
+        opp.push(
+            'EMA20 < EMA50'
+        );
+    }
+
+
+    /* LONGER TREND */
+
+    if (e50 > e100) {
+
+        score += 10;
+        why.push(
+            'long trend positive'
+        );
+
+    } else {
+
+        score -= 10;
+        opp.push(
+            'long trend negative'
+        );
+    }
+
+
+    /* RSI */
+
+    if (
+        rr >= 52 &&
+        rr <= 70
+    ) {
+
+        score += 10;
+
+        why.push(
+            'healthy RSI'
+        );
+
+    } else if (rr > 75) {
+
+        score -= 14;
+
+        opp.push(
+            'overbought'
+        );
+
+    } else if (rr < 30) {
+
+        score += 6;
+
+        why.push(
+            'capitulation potential'
+        );
+
+    } else {
+
+        score -= 3;
+
+        opp.push(
+            'weak RSI'
+        );
+    }
+
+
+    /* MOMENTUM */
+
+    if (mom > 0.025) {
+
+        score += 14;
+
+        why.push(
+            'positive momentum'
+        );
+
+    } else if (mom < -0.025) {
+
+        score -= 14;
+
+        opp.push(
+            'negative momentum'
+        );
+    }
+
+
+    /* VOLUME */
+
+    if (vr > 1.35) {
+
+        score += 8;
+
+        why.push(
+            'volume expansion'
+        );
+    }
+
+
+    /* EXTREME POSITION */
+
+    if (range > 0.88) {
+
+        score -= 9;
+
+        opp.push(
+            'near 48h high / chase risk'
+        );
+    }
+
+
+    if (range < 0.12) {
+
+        score += 5;
+
+        why.push(
+            'near 48h low / reversal potential'
+        );
+    }
+
+
+    return {
+        last,
+        e20,
+        e50,
+        e100,
+        atr: a,
+        atrPct: a / last,
+        rsi: rr,
+        mom,
+        vr,
+        range,
+        score,
+        why,
+        opp
+    };
 }
 
 
-function sleep(ms){
+/* =========================================================
+   ASSET
+   ========================================================= */
 
-return new Promise(resolve=>setTimeout(resolve,ms));
+async function asset(sym) {
 
+    const d =
+        await candles(sym);
+
+    return {
+        sym,
+        s: analyse(d)
+    };
 }
 
 
-/* ------------------------------------------------------------
-   SAFE FETCH WITH RETRIES
-   ------------------------------------------------------------ */
+/* =========================================================
+   PSYCHOLOGY ENGINE
+   ========================================================= */
 
-async function fetchJSON(url,timeout=CFG.REQUEST_TIMEOUT,retries=CFG.RETRIES){
+function psych(x) {
 
-let lastErr;
+    const s = x.s;
 
-for(let attempt=0;attempt<=retries;attempt++){
+    let fomo = 0;
+    let panic = 0;
 
-const controller=new AbortController();
 
-const timer=setTimeout(
-()=>controller.abort(),
-timeout
-);
+    /* FOMO */
 
-try{
+    if (s.mom > 0.05) {
+        fomo += 55;
+    }
 
-const response=await fetch(url,{
-cache:"no-store",
-signal:controller.signal,
-headers:{
-"Accept":"application/json"
-}
-});
+    if (s.vr > 1.8) {
+        fomo += 25;
+    }
 
-clearTimeout(timer);
+    if (s.range > 0.9) {
+        fomo += 20;
+    }
 
-if(response.status===429){
 
-if(attempt<retries){
+    /* PANIC */
 
-await sleep(800*Math.pow(2,attempt));
+    if (s.mom < -0.05) {
+        panic += 55;
+    }
 
-continue;
+    if (
+        s.vr > 1.8 &&
+        s.mom < 0
+    ) {
+        panic += 25;
+    }
 
-}
+    if (s.range < 0.08) {
+        panic += 20;
+    }
 
-throw new Error("HTTP 429 rate limited");
 
-}
+    let label = 'NEUTRAL';
 
-if(!response.ok){
+    if (fomo >= 70) {
+        label = 'FOMO / CROWDING';
+    } else if (panic >= 70) {
+        label = 'PANIC / CAPITULATION';
+    } else if (fomo >= 40) {
+        label = 'OPTIMISM';
+    } else if (panic >= 40) {
+        label = 'FEAR';
+    }
 
-throw new Error("HTTP "+response.status);
 
-}
-
-return await response.json();
-
-}catch(err){
-
-clearTimeout(timer);
-
-lastErr=err;
-
-if(attempt<retries){
-
-await sleep(600*Math.pow(2,attempt));
-
-}
-
-}
-
-}
-
-throw lastErr||new Error("Request failed");
-
+    return {
+        fomo: Math.min(100, fomo),
+        panic: Math.min(100, panic),
+        label
+    };
 }
 
 
-/* ------------------------------------------------------------
-   BINANCE PUBLIC DATA
-   ------------------------------------------------------------ */
+/* =========================================================
+   MARKET REGIME
+   ========================================================= */
 
-const BINANCE_BASES=[
+async function regime() {
 
-"https://data-api.binance.vision",
-"https://api.binance.com"
+    const b =
+        await asset('BTCUSDT');
 
-];
+    let name;
 
+    if (b.s.score >= 38) {
 
-async function binanceJSON(path){
+        name =
+            'RISK-ON / BULLISH';
 
-let last;
+    } else if (
+        b.s.score <= -30
+    ) {
 
-for(const base of BINANCE_BASES){
+        name =
+            'RISK-OFF / BEARISH';
 
-try{
+    } else {
 
-return await fetchJSON(base+path);
+        name =
+            'SIDEWAYS / TRANSITION';
+    }
 
-}catch(e){
-
-last=e;
-
-}
-
-}
-
-throw last||new Error("Binance unavailable");
-
-}
-
-
-/* ------------------------------------------------------------
-   CANDLE PARSER
-   ------------------------------------------------------------ */
-
-function parseKlines(rows){
-
-if(!Array.isArray(rows))return[];
-
-return rows.map(x=>({
-
-t:Number(x[0]),
-
-open:Number(x[1]),
-
-high:Number(x[2]),
-
-low:Number(x[3]),
-
-close:Number(x[4]),
-
-volume:Number(x[5])
-
-})).filter(x=>
-Number.isFinite(x.close)&&
-Number.isFinite(x.high)&&
-Number.isFinite(x.low)
-);
-
+    return {
+        ...b,
+        name
+    };
 }
 
 
-/* ------------------------------------------------------------
-   MARKET DATA CACHE
-   ------------------------------------------------------------ */
+/* =========================================================
+   DECISION ENGINE
+   ========================================================= */
 
-const marketCache={};
+function decide(list, reg) {
 
+    if (S.position) {
 
-async function getBinanceAsset(a){
+        return {
+            action: 'HOLD',
+            asset: S.position.sym,
+            confidence: 70,
+            reasons: [
+                'One-position rule: manage existing position'
+            ],
+            opp: []
+        };
+    }
 
-const now=Date.now();
 
-let cached=marketCache[a.symbol];
+    if (!list.length) {
 
+        return {
+            action: 'WAIT',
+            confidence: 0,
+            reasons: [
+                'No valid deep-analysis candidates'
+            ],
+            opp: []
+        };
+    }
 
-/*
-  Price/24h ticker is refreshed every scan.
-*/
 
-let ticker;
+    const candidates =
+        list.map(x => ({
+            ...x,
+            p: psych(x)
+        }));
 
-try{
 
-ticker=await binanceJSON(
-"/api/v3/ticker/24hr?symbol="+encodeURIComponent(a.binance)
-);
+    candidates.sort(
+        (a, b) =>
+            b.s.score -
+            a.s.score
+    );
 
-}catch(e){
 
-/*
-  If Binance ticker is temporarily rate limited,
-  use cached ticker rather than destroying the scan.
-*/
+    const q =
+        candidates[0];
 
-if(cached?.ticker){
 
-ticker=cached.ticker;
+    /*
+       Confidence starts from neutral,
+       then market and BTC regime
+       influence it.
+    */
 
-}else{
+    let conf =
+        50 +
+        q.s.score * 0.55 +
+        reg.s.score * 0.15;
 
-throw e;
 
-}
+    /*
+       Crowding penalty
+    */
 
-}
+    if (q.p.fomo >= 70) {
+        conf -= 18;
+    }
 
 
-/*
-  Candles are only refreshed every five minutes.
-  This is the major anti-429 change.
-*/
+    /*
+       Bear-market veto influence
+    */
 
-let c15=cached?.c15||[];
-let c1h=cached?.c1h||[];
+    if (
+        reg.name ===
+        'RISK-OFF / BEARISH'
+    ) {
+        conf -= 22;
+    }
 
-if(!cached || now-cached.time>CFG.CANDLE_CACHE_MS){
 
-try{
+    conf = Math.max(
+        0,
+        Math.min(
+            99,
+            Math.round(conf)
+        )
+    );
 
-const [r15,r1h]=await Promise.all([
 
-binanceJSON(
-"/api/v3/klines?symbol="+encodeURIComponent(a.binance)+"&interval=15m&limit=120"
-),
+    const buy =
+        conf >= CFG.MIN_CONF &&
+        q.s.score >= 35 &&
+        reg.name !==
+            'RISK-OFF / BEARISH' &&
+        q.p.fomo < 90;
 
-binanceJSON(
-"/api/v3/klines?symbol="+encodeURIComponent(a.binance)+"&interval=1h&limit=120"
-)
 
-]);
-
-c15=parseKlines(r15);
-c1h=parseKlines(r1h);
-
-}catch(e){
-
-if(!c15.length){
-
-throw e;
-
-}
-
-}
-
-}
-
-
-const price=Number(ticker.lastPrice);
-
-const change=Number(ticker.priceChangePercent||0);
-
-if(!Number.isFinite(price)||price<=0){
-
-throw new Error("Invalid Binance price");
-
-}
-
-
-marketCache[a.symbol]={
-
-time:now,
-
-ticker,
-
-c15,
-
-c1h
-
-};
-
-
-return{
-
-...a,
-
-priceUSD:price,
-
-change,
-
-highUSD:Number(ticker.highPrice||price),
-
-lowUSD:Number(ticker.lowPrice||price),
-
-c15,
-
-c1h,
-
-source:"Binance",
-
-quality:c15.length>=60?"LIVE":"BUILDING"
-
-};
-
-}
-
-
-/* ------------------------------------------------------------
-   USD -> GBP REFERENCE
-   ------------------------------------------------------------ */
-
-/*
-  We use BTCUSDT and BTCGBP where available.
-  BTCGBP is requested only occasionally.
-  This avoids CoinGecko's 429 problem.
-*/
-
-async function getGBPPerUSD(){
-
-const now=Date.now();
-
-if(
-state.fx?.gbpPerUsd &&
-now-state.fx.time<CFG.FX_CACHE_MS
-){
-
-return state.fx.gbpPerUsd;
-
+    return {
+        action: buy
+            ? 'BUY'
+            : 'WAIT',
+
+        asset: q.sym,
+
+        confidence: conf,
+
+        reasons: [
+            ...q.s.why,
+            'BTC regime: ' +
+                reg.name,
+            'Crowd state: ' +
+                q.p.label
+        ],
+
+        opp: [
+            ...q.s.opp,
+
+            ...(q.p.fomo >= 70
+                ? [
+                    'crowding/FOMO pressure'
+                ]
+                : []),
+
+            ...(reg.s.score < 0
+                ? [
+                    'BTC not confirming'
+                ]
+                : [])
+        ],
+
+        top: q
+    };
 }
 
 
-/*
-  Try Binance BTCGBP.
-*/
+/* =========================================================
+   OPEN POSITION
+   ========================================================= */
 
-try{
+function open(x) {
 
-const [btcUsd,btcGbp]=await Promise.all([
-
-binanceJSON(
-"/api/v3/ticker/price?symbol=BTCUSDT"
-),
-
-binanceJSON(
-"/api/v3/ticker/price?symbol=BTCGBP"
-)
-
-]);
-
-const u=Number(btcUsd.price);
-const g=Number(btcGbp.price);
-
-if(u>0&&g>0){
-
-state.fx={
-gbpPerUsd:g/u,
-time:now
-};
-
-save();
-
-return g/u;
-
-}
-
-}catch(e){}
+    if (S.position) {
+        return;
+    }
 
 
-/*
-  Cached value remains valid if Binance BTCGBP
-  temporarily fails.
-*/
+    /*
+       V7 can deploy the entire
+       available paper account when
+       the decision engine permits it.
+    */
 
-if(state.fx?.gbpPerUsd){
-
-return state.fx.gbpPerUsd;
-
-}
-
-
-/*
-  Last-resort public FX endpoint.
-  Only called when no cached FX exists.
-*/
-
-try{
-
-const fx=await fetchJSON(
-"https://api.frankfurter.app/latest?from=USD&to=GBP",
-8000,
-1
-);
-
-const rate=Number(fx?.rates?.GBP);
-
-if(rate>0){
-
-state.fx={
-gbpPerUsd:rate,
-time:now
-};
-
-save();
-
-return rate;
-
-}
-
-}catch(e){}
+    const alloc =
+        Math.min(
+            S.cash,
+            S.cash *
+                CFG.MAX_ALLOCATION
+        );
 
 
-/*
-  Do not invent a market price.
-  0 means GBP conversion unavailable.
-*/
+    const entry =
+        x.s.last *
+        (1 + CFG.SLIP);
 
-return null;
 
+    const fee =
+        alloc *
+        CFG.FEE;
+
+
+    const qty =
+        (alloc - fee) /
+        entry;
+
+
+    S.cash -= alloc;
+
+
+    S.position = {
+
+        sym: x.sym,
+
+        qty,
+
+        entry,
+
+        stop:
+            entry -
+            Math.max(
+                x.s.atr * 1.7,
+                entry * 0.025
+            ),
+
+        target:
+            entry * 1.06,
+
+        peak: entry,
+
+        opened: Date.now()
+    };
+
+
+    S.log.unshift({
+
+        t: Date.now(),
+
+        type: 'BUY',
+
+        sym: x.sym,
+
+        price: entry,
+
+        pnl: null
+    });
+
+
+    save();
 }
 
 
-/* ------------------------------------------------------------
-   TECHNICAL INDICATORS
-   ------------------------------------------------------------ */
+/* =========================================================
+   POSITION MANAGEMENT
+   ========================================================= */
 
-function ema(a,n){
+function manage(mark) {
 
-if(a.length<n)return null;
+    if (!S.position) {
+        return;
+    }
 
-const k=2/(n+1);
 
-let e=avg(a.slice(0,n));
+    const p =
+        S.position;
 
-for(let i=n;i<a.length;i++){
 
-e=a[i]*k+e*(1-k);
+    p.peak =
+        Math.max(
+            p.peak,
+            mark
+        );
 
-}
 
-return e;
+    const trail =
+        p.peak * 0.982;
 
-}
 
+    const stop =
+        Math.max(
+            p.stop,
+            trail
+        );
 
-function rsi(a,n=14){
 
-if(a.length<n+1)return null;
+    const loss =
+        mark /
+        p.entry -
+        1;
 
-let gain=0;
-let loss=0;
 
-for(let i=1;i<=n;i++){
+    const stopHit =
+        mark <= stop;
 
-const d=a[i]-a[i-1];
+    const maxLoss =
+        loss <=
+        -CFG.MAX_LOSS;
 
-if(d>0)gain+=d;
-else loss-=d;
+    const targetHit =
+        mark >=
+        p.target;
 
-}
 
-let ag=gain/n;
-let al=loss/n;
+    if (
+        maxLoss ||
+        stopHit ||
+        targetHit
+    ) {
 
-for(let i=n+1;i<a.length;i++){
+        const exit =
+            mark *
+            (1 - CFG.SLIP);
 
-const d=a[i]-a[i-1];
 
-ag=((ag*(n-1))+(d>0?d:0))/n;
+        const gross =
+            p.qty *
+            exit;
 
-al=((al*(n-1))+(d<0?-d:0))/n;
 
-}
+        const fee =
+            gross *
+            CFG.FEE;
 
-if(al===0)return 100;
 
-return 100-(100/(1+ag/al));
+        const pnl =
+            gross -
+            fee -
+            p.qty *
+            p.entry;
 
-}
 
+        S.cash +=
+            gross -
+            fee;
 
-function atr(c,n=14){
 
-if(c.length<n+1)return null;
+        S.log.unshift({
 
-const tr=[];
+            t: Date.now(),
 
-for(let i=1;i<c.length;i++){
+            type: 'SELL',
 
-tr.push(
+            sym: p.sym,
 
-Math.max(
+            price: exit,
 
-c[i].high-c[i].low,
+            pnl
+        });
 
-Math.abs(c[i].high-c[i-1].close),
-Math.abs(c[i].low-c[i-1].close)
 
-)
+        S.position = null;
 
-);
-
-}
-
-return avg(tr.slice(-n));
-
-}
-
-
-function macd(a){
-
-if(a.length<35)return null;
-
-const e12=ema(a,12);
-const e26=ema(a,26);
-
-if(e12==null||e26==null)return null;
-
-return e12-e26;
-
-}
-
-
-function candlesAgg(c,step){
-
-if(!c.length)return[];
-
-const out=[];
-
-for(let i=0;i<c.length;i+=step){
-
-const s=c.slice(i,i+step);
-
-if(s.length<step)continue;
-
-out.push({
-
-t:s[0].t,
-
-open:s[0].open,
-
-high:Math.max(...s.map(x=>x.high)),
-
-low:Math.min(...s.map(x=>x.low)),
-
-close:s[s.length-1].close,
-
-volume:s.reduce((z,x)=>z+x.volume,0)
-
-});
-
-}
-
-return out;
-
+        save();
+    }
 }
 
 
-/* ------------------------------------------------------------
-   HISTORY
-   ------------------
+/* =========================================================
+   EQUITY
+   ========================================================= */
+
+function equity(markets) {
+
+    return (
+        S.cash +
+        (
+            S.position &&
+            markets[S.position.sym]
+                ? S.position.qty *
+                  markets[
+                      S.position.sym
+                  ].s.last
+                : 0
+        )
+    );
+}
+
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
+function render(
+    reg,
+    all,
+    dec
+) {
+
+    const map =
+        Object.fromEntries(
+            all.map(
+                x => [
+                    x.sym,
+                    x
+                ]
+            )
+        );
+
+
+    S.equity =
+        equity(map);
+
+
+    $('equity').textContent =
+        money(S.equity);
+
+
+    $('cash').textContent =
+        'Cash ' +
+        money(S.cash);
+
+
+    $('decision').textContent =
+        dec.action +
+        (
+            dec.asset
+                ? ' ' +
+                  dec.asset.replace(
+                      'USDT',
+                      ''
+                  )
+                : ''
+        );
+
+
+    $('confidence').textContent =
+        dec.confidence +
+        '%';
+
+
+    $('regime').textContent =
+        reg.name;
+
+
+    $('regimeWhy').textContent =
+        reg.s.why
+            .concat(reg.s.opp)
+            .slice(0, 4)
+            .join(' • ');
+
+
+    $('position').textContent =
+        S.position
+            ? S.position.sym.replace(
+                'USDT',
+                ''
+              )
+            : 'FLAT';
+
+
+    $('posInfo').textContent =
+        S.position
+            ? 'Entry ' +
+              money(
+                  S.position.entry
+              ) +
+              ' | Stop ' +
+              money(
+                  S.position.stop
+              )
+            : 'No exposure';
+
+
+    /* =====================================================
+       RADAR TABLE
+       ===================================================== */
+
+    $('radar').innerHTML =
+        '<table>' +
+        '<tr>' +
+        '<th>Asset</th>' +
+        '<th>Score</th>' +
+        '<th>RSI</th>' +
+        '<th>Momentum</th>' +
+        '<th>Volume</th>' +
+        '<th>Crowd</th>' +
+        '</tr>' +
+
+        all.map(x => {
+
+            const p =
+                psych(x);
+
+            return (
+                '<tr>' +
+                '<td>' +
+                x.sym.replace(
+                    'USDT',
+                    ''
+                ) +
+                '</td>' +
+
+                '<td>' +
+                x.s.score +
+                '</td>' +
+
+                '<td>' +
+                x.s.rsi.toFixed(1) +
+                '</td>' +
+
+                '<td>' +
+                pct(x.s.mom) +
+        
