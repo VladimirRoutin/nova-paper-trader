@@ -3,1216 +3,223 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Nova Paper Trader V7</title>
+<title>Nova Paper Trader V8</title>
 <style>
-body{margin:0;background:#0b1020;color:#eef2ff;font:14px system-ui}
-main{max-width:1100px;margin:auto;padding:16px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
-.card{background:#141b30;border:1px solid #283454;border-radius:14px;padding:14px;margin:10px 0}
-.big{font-size:25px;font-weight:700}
-.muted{color:#9aa7c0}
-.ok{color:#7ee787}.bad{color:#ff7b72}.warn{color:#f2cc60}
-button{background:#29447e;color:#fff;border:0;border-radius:9px;padding:10px 14px;margin:3px}
-table{width:100%;border-collapse:collapse}
-td,th{padding:7px;border-bottom:1px solid #293452;text-align:left;font-size:12px}
-.pill{display:inline-block;padding:5px 9px;border-radius:99px;background:#293452}
-pre{white-space:pre-wrap;font-size:12px}
+:root{--bg:#070b14;--panel:#0d1422;--panel2:#111a2b;--line:#22304a;--text:#edf3ff;--muted:#8fa1bd;--good:#35d07f;--bad:#ff5c7a;--warn:#f4c95d;--accent:#71a7ff;--shadow:0 14px 40px rgba(0,0,0,.28)}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#060a12,#09101b 40%,#070b14);color:var(--text);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}button,input,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);background:#121d30;color:var(--text);border-radius:10px;padding:9px 12px}button:hover{filter:brightness(1.12)}button.primary{background:#17345e;border-color:#2d5e9e}.wrap{max-width:1400px;margin:auto;padding:18px}.top{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}.brand h1{margin:0;font-size:22px}.brand p{margin:3px 0 0;color:var(--muted)}.actions{display:flex;gap:8px;flex-wrap:wrap}.grid{display:grid;grid-template-columns:1.55fr .9fr;gap:14px;margin-top:14px}.panel{background:rgba(13,20,34,.94);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}.head{padding:13px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}.head h2{font-size:15px;margin:0}.body{padding:14px}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.card{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:11px}.label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.value{font-size:19px;font-weight:700;margin-top:3px}.sub{font-size:12px;color:var(--muted);margin-top:3px}.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}.accent{color:var(--accent)}.status{display:inline-flex;align-items:center;gap:7px;padding:6px 9px;border-radius:999px;background:#0b1220;border:1px solid var(--line);font-size:12px}.dot{width:8px;height:8px;border-radius:50%;background:var(--warn)}.dot.good{background:var(--good)}.dot.bad{background:var(--bad)}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:9px 7px;border-bottom:1px solid #1b2840;font-size:12px;vertical-align:middle}th{color:var(--muted);font-weight:600}tr:last-child td{border-bottom:0}.pill{display:inline-block;padding:3px 7px;border-radius:999px;border:1px solid var(--line);font-size:11px}.pill.buy{color:var(--good);border-color:#205e42}.pill.wait{color:var(--warn);border-color:#5c4c1f}.pill.exit{color:var(--bad);border-color:#65273a}.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.news{display:grid;gap:9px}.news a{color:var(--text);text-decoration:none}.news a:hover{text-decoration:underline}.newsitem{padding:10px;border:1px solid var(--line);border-radius:11px;background:#0b1321}.meta{font-size:11px;color:var(--muted);margin-top:5px}.feedbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.progress{height:7px;background:#111c2c;border-radius:20px;overflow:hidden}.progress i{display:block;height:100%;background:var(--accent);width:0}.walletrow{display:flex;gap:7px;margin-bottom:8px}.walletrow input{flex:1;min-width:0;background:#0a1220;border:1px solid var(--line);border-radius:9px;color:var(--text);padding:9px}.small{font-size:11px;color:var(--muted)}.log{max-height:270px;overflow:auto;display:grid;gap:7px}.logitem{border-left:3px solid var(--line);padding:7px 9px;background:#0a1220}.foot{padding:14px 0 4px;color:var(--muted);font-size:11px}.empty{color:var(--muted);padding:15px;text-align:center}.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{background:#0a1220;border:1px solid var(--line);border-radius:10px;padding:9px}.metric b{display:block;font-size:15px}.tag{font-size:10px;color:var(--muted);text-transform:uppercase}.riskbox{border:1px solid var(--line);border-radius:12px;padding:11px;background:#0a1220}.reason{margin:5px 0;color:#c6d1e5}.source{color:var(--accent)}@media(max-width:1000px){.grid{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.wrap{padding:10px}.two{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}th:nth-child(5),td:nth-child(5),th:nth-child(6),td:nth-child(6){display:none}.value{font-size:17px}}
 </style>
 </head>
-
 <body>
-<main>
+<div class="wrap">
+  <div class="top">
+    <div class="brand"><h1>Nova Paper Trader V8</h1><p>Market decision engine with news + wallet intelligence as side evidence</p></div>
+    <div class="actions"><button id="scanBtn" class="primary">SCAN MARKET NOW</button><button id="resetBtn">RESET £100</button><span class="status"><span id="dot" class="dot"></span><span id="status">Idle</span></span></div>
+  </div>
 
-<h1>Nova Paper Trader V7</h1>
-<div class="muted">
-Market radar • decision engine • psychology proxies • paper only
+  <div class="grid">
+    <main>
+      <section class="panel">
+        <div class="head"><h2>Paper account</h2><span class="small" id="lastScan">No scan yet</span></div>
+        <div class="body">
+          <div class="cards">
+            <div class="card"><div class="label">Equity</div><div class="value" id="equity">£100.00</div><div class="sub" id="cash">Cash £100.00</div></div>
+            <div class="card"><div class="label">Position</div><div class="value" id="position">FLAT</div><div class="sub" id="posDetail">No open trade</div></div>
+            <div class="card"><div class="label">Decision</div><div class="value" id="decision">WAIT</div><div class="sub" id="confidence">Confidence —</div></div>
+            <div class="card"><div class="label">Regime</div><div class="value" id="regime">UNKNOWN</div><div class="sub" id="breadth">Breadth —</div></div>
+            <div class="card"><div class="label">Performance</div><div class="value" id="pnl">£0.00</div><div class="sub" id="stats">0 trades</div></div>
+          </div>
+          <div style="margin-top:14px"><div class="small" id="progressText">Ready.</div><div class="progress"><i id="progress"></i></div></div>
+        </div>
+      </section>
+
+      <section class="panel" style="margin-top:14px">
+        <div class="head"><h2>Market radar → deep analysis</h2><span class="small">Technical engine chooses candidates; news/wallets modify confidence only</span></div>
+        <div class="body" style="padding:0"><div id="radar" class="empty">Run a scan.</div></div>
+      </section>
+
+      <div class="two" style="margin-top:14px">
+        <section class="panel"><div class="head"><h2>Decision trail</h2></div><div class="body"><div id="decisionTrail" class="log"><div class="empty">No decisions yet.</div></div></div></section>
+        <section class="panel"><div class="head"><h2>Open trade management</h2></div><div class="body"><div id="tradeBox" class="riskbox">No open paper position.</div></div></section>
+      </div>
+    </main>
+
+    <aside>
+      <section class="panel"><div class="head"><h2>News intelligence</h2><span id="newsState" class="small">Not loaded</span></div><div class="body"><div id="news" class="news"><div class="empty">News is evidence, not a trigger.</div></div></div></section>
+      <section class="panel" style="margin-top:14px"><div class="head"><h2>Wallet sidecar</h2><span class="small">Public addresses only</span></div><div class="body">
+        <div class="walletrow"><input id="walletInput" placeholder="BTC or Ethereum public address"><button id="addWallet">Add</button></div>
+        <div class="small" style="margin-bottom:9px">Wallet observations never create a BUY by themselves. The app does not request private keys.</div>
+        <div id="wallets"><div class="empty">No wallet watchlist.</div></div>
+      </div></section>
+      <section class="panel" style="margin-top:14px"><div class="head"><h2>Research notes</h2></div><div class="body"><div id="research" class="small">Waiting for market data.</div></div></section>
+    </aside>
+  </div>
+  <div class="foot">Paper trading only. Public market data is fetched without exchange credentials. If a provider fails, Nova marks the data unavailable instead of inventing values.</div>
 </div>
-
-<p>
-<button id="scan">SCAN NOW</button>
-<button id="reset">RESET £100</button>
-<span id="status" class="pill">Starting</span>
-</p>
-
-<div class="grid">
-
-<div class="card">
-<span class="muted">Equity</span>
-<div id="equity" class="big">£100.00</div>
-<span id="cash">Cash £100.00</span>
-</div>
-
-<div class="card">
-<span class="muted">Decision</span>
-<div id="decision" class="big">WAIT</div>
-<span id="confidence">0%</span>
-</div>
-
-<div class="card">
-<span class="muted">Regime</span>
-<div id="regime" class="big">LOADING</div>
-<span id="regimeWhy" class="muted"></span>
-</div>
-
-<div class="card">
-<span class="muted">Position</span>
-<div id="position" class="big">FLAT</div>
-<span id="posInfo" class="muted"></span>
-</div>
-
-</div>
-
-<section class="card">
-<h2>Market Radar</h2>
-<div id="radar">Loading…</div>
-</section>
-
-<section class="card">
-<h2>Decision evidence</h2>
-<div id="evidence">No decision yet.</div>
-</section>
-
-<section class="card">
-<h2>Psychology</h2>
-<div id="psych">No analysis yet.</div>
-</section>
-
-<section class="card">
-<h2>News / narrative</h2>
-<div id="news">
-Not connected. Nova will not invent headlines.
-</div>
-</section>
-
-<section class="card">
-<h2>Trade log</h2>
-<div id="log">No trades.</div>
-</section>
-
-<section class="card">
-<h2>System health</h2>
-<pre id="system">Starting…</pre>
-</section>
-
-</main>
 
 <script>
+(function(){
 'use strict';
 
-/* =========================================================
-   NOVA PAPER TRADER V7
-   ========================================================= */
-
-const CFG = {
-    START: 100,
-    FEE: 0.004,
-    SLIP: 0.0012,
-
-    SCAN_MS: 180000,
-
-    RADAR_LIMIT: 18,
-    DEEP: 5,
-    LOOKBACK: 180,
-
-    STORE: 'nova-paper-v7',
-
-    MAX_ALLOCATION: 1,
-    MAX_LOSS: 0.08,
-
-    MIN_CONF: 78
+var CFG={
+  START:100,
+  FEE:0.004,
+  SLIP:0.001,
+  SCAN_MS:180000,
+  DEEP:4,
+  MAX_ASSETS:18,
+  MIN_CONF:76,
+  KEY:'nova-paper-v8',
+  NEWS_KEY:'nova-paper-v8-news',
+  WALLET_KEY:'nova-paper-v8-wallets',
+  API:'https://data-api.binance.vision/api/v3',
+  API_FALLBACK:'https://api.binance.com/api/v3'
 };
 
+var ASSETS=['BTCUSDT','ETHUSDT','SOLUSDT','XRPUSDT','BNBUSDT','LINKUSDT','SUIUSDT','DOGEUSDT','ADAUSDT','TRXUSDT','AVAXUSDT','TONUSDT','DOTUSDT','LTCUSDT','AAVEUSDT','NEARUSDT','UNIUSDT','ATOMUSDT'];
+var NAMES={BTCUSDT:'BTC',ETHUSDT:'ETH',SOLUSDT:'SOL',XRPUSDT:'XRP',BNBUSDT:'BNB',LINKUSDT:'LINK',SUIUSDT:'SUI',DOGEUSDT:'DOGE',ADAUSDT:'ADA',TRXUSDT:'TRX',AVAXUSDT:'AVAX',TONUSDT:'TON',DOTUSDT:'DOT',LTCUSDT:'LTC',AAVEUSDT:'AAVE',NEARUSDT:'NEAR',UNIUSDT:'UNI',ATOMUSDT:'ATOM'};
+var state={cash:CFG.START,position:null,trades:[],journal:[],lastScan:null,scanBusy:false,market:null,news:[],wallets:[]};
 
-/* =========================================================
-   MARKET UNIVERSE
-   ========================================================= */
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s==null?'':s).replace(/[&<>'"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]})}
+function num(x,d){var n=Number(x);return Number.isFinite(n)?n:(d==null?0:d)}
+function money(x){return '£'+num(x).toFixed(2)}
+function pct(x){return (num(x)*100).toFixed(1)+'%'}
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
+function mean(a){a=a.filter(Number.isFinite);return a.length?a.reduce(function(x,y){return x+y},0)/a.length:0}
+function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
+function fmtPrice(x){x=num(x);if(x>=1000)return x.toLocaleString(undefined,{maximumFractionDigits:0});if(x>=1)return x.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});return x.toLocaleString(undefined,{minimumFractionDigits:4,maximumFractionDigits:6})}
 
-const SYMBOLS = [
-    'BTCUSDT',
-    'ETHUSDT',
-    'SOLUSDT',
-    'LINKUSDT',
-    'XRPUSDT',
-    'BNBUSDT',
-    'SUIUSDT',
-    'ADAUSDT',
-    'AVAXUSDT',
-    'DOGEUSDT',
-    'TONUSDT',
-    'TRXUSDT',
-    'DOTUSDT',
-    'LTCUSDT',
-    'AAVEUSDT',
-    'NEARUSDT',
-    'UNIUSDT',
-    'ATOMUSDT'
-];
+function save(){try{localStorage.setItem(CFG.KEY,JSON.stringify(state));localStorage.setItem(CFG.WALLET_KEY,JSON.stringify(state.wallets))}catch(e){}}
+function load(){try{var s=JSON.parse(localStorage.getItem(CFG.KEY)||'null');if(s){state=Object.assign(state,s)}var w=JSON.parse(localStorage.getItem(CFG.WALLET_KEY)||'[]');if(Array.isArray(w))state.wallets=w}catch(e){}}
 
-
-/* =========================================================
-   DATA PROVIDERS
-   ========================================================= */
-
-const APIS = [
-    'https://data-api.binance.vision',
-    'https://api.binance.com'
-];
-
-
-/* =========================================================
-   STATE
-   ========================================================= */
-
-const $ = x => document.getElementById(x);
-
-let scanBusy = false;
-
-function fresh() {
-    return {
-        cash: CFG.START,
-        position: null,
-        log: [],
-        lastScan: 0,
-        equity: CFG.START,
-        decisions: 0
-    };
+async function request(path,opts){
+  opts=opts||{}; var timeout=opts.timeout||12000; var bases=[CFG.API,CFG.API_FALLBACK]; var last=null;
+  for(var i=0;i<bases.length;i++){
+    try{
+      var ctl=new AbortController();var timer=setTimeout(function(){ctl.abort()},timeout);
+      var res=await fetch(bases[i]+path,{signal:ctl.signal,cache:'no-store'});clearTimeout(timer);
+      if(res.status===429||res.status===418){throw new Error('RATE_LIMIT_'+res.status)}
+      if(!res.ok)throw new Error('HTTP_'+res.status);
+      return await res.json();
+    }catch(e){last=e;if(String(e.message).indexOf('RATE_LIMIT')>=0)await sleep(1600*(i+1));}
+  }
+  throw last||new Error('request_failed');
 }
 
-function load() {
-    try {
-        return Object.assign(
-            fresh(),
-            JSON.parse(localStorage.getItem(CFG.STORE) || '{}')
-        );
-    } catch {
-        return fresh();
-    }
+function rsi(vals,p){p=p||14;if(vals.length<=p)return 50;var g=0,l=0;for(var i=vals.length-p;i<vals.length;i++){var d=vals[i]-vals[i-1];if(d>0)g+=d;else l-=d}if(l===0)return 100;var rs=(g/p)/(l/p);return 100-(100/(1+rs))}
+function ema(vals,p){if(vals.length<p)return mean(vals);var k=2/(p+1),e=mean(vals.slice(0,p));for(var i=p;i<vals.length;i++)e=vals[i]*k+e*(1-k);return e}
+function atr(rows,p){p=p||14;if(rows.length<p+1)return 0;var trs=[];for(var i=1;i<rows.length;i++){var h=rows[i].h,l=rows[i].l,pc=rows[i-1].c;trs.push(Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc)))}return mean(trs.slice(-p))}
+function momentum(vals,n){n=n||24;if(vals.length<=n)return 0;return vals[vals.length-1]/vals[vals.length-1-n]-1}
+function volRatio(rows,n){n=n||20;if(rows.length<n+1)return 1;var a=rows.slice(-n-1,-1).map(function(x){return x.v});return rows[rows.length-1].v/Math.max(mean(a),1e-12)}
+function candle(raw){return {t:num(raw[0]),o:num(raw[1]),h:num(raw[2]),l:num(raw[3]),c:num(raw[4]),v:num(raw[5]),q:num(raw[7]),trades:num(raw[8])}}
+
+async function klines(symbol,interval,limit){
+  var data=await request('/klines?symbol='+encodeURIComponent(symbol)+'&interval='+interval+'&limit='+(limit||180));
+  if(!Array.isArray(data)||data.length<40)throw new Error('insufficient_'+symbol+'_'+interval);
+  return data.map(candle);
 }
 
-let S = load();
-
-
-function save() {
-    localStorage.setItem(
-        CFG.STORE,
-        JSON.stringify(S)
-    );
+function technical(rows){
+  var c=rows.map(function(x){return x.c}), last=c[c.length-1], e20=ema(c,20),e50=ema(c,50),e100=ema(c,100),r=rsi(c,14),a=atr(rows,14),m=momentum(c,24),vr=volRatio(rows,20);
+  var hi=Math.max.apply(null,rows.slice(-48).map(function(x){return x.h})),lo=Math.min.apply(null,rows.slice(-48).map(function(x){return x.l}));
+  var trend=(last>e20?1:0)+(last>e50?1:0)+(e20>e50?1:0)+(e50>e100?1:0);
+  var score=0;
+  score+=trend*10;
+  score+=clamp(m*100, -18,18);
+  score+=clamp((r-50)*0.42,-14,14);
+  score+=clamp((vr-1)*7,-7,10);
+  if(last>hi*0.985)score+=8;
+  if(last<lo*1.015)score-=6;
+  if(a>0)score+=clamp(((a/last)-.018)*-120,-8,8);
+  return {last:last,e20:e20,e50:e50,e100:e100,rsi:r,atr:a,mom:m,vr:vr,hi:hi,lo:lo,trend:trend,score:score};
 }
 
-
-/* =========================================================
-   DISPLAY HELPERS
-   ========================================================= */
-
-function money(x) {
-    return '£' + Number(x || 0).toFixed(2);
+function regime(btc){
+  if(!btc)return {name:'UNKNOWN',score:0,reason:'No BTC data'};
+  var x=btc;
+  if(x.last>x.e50&&x.e20>x.e50&&x.e50>x.e100&&x.rsi>52)return {name:'RISK-ON / BULL TREND',score:18,reason:'BTC is above major trend averages with positive momentum.'};
+  if(x.last<x.e50&&x.e20<x.e50&&x.e50<x.e100&&x.rsi<48)return {name:'RISK-OFF / BEAR TREND',score:-22,reason:'BTC is below major trend averages with weak momentum.'};
+  if(x.last>x.e50&&x.e20>x.e50)return {name:'EARLY RECOVERY',score:8,reason:'BTC has recovered above intermediate trend levels.'};
+  if(x.last<x.e50&&x.e20<x.e50)return {name:'WEAKENING',score:-10,reason:'BTC structure is deteriorating.'};
+  return {name:'TRANSITION / RANGE',score:0,reason:'BTC trend signals are mixed.'};
 }
 
-function pct(x) {
-    return (x * 100).toFixed(1) + '%';
-}
+function breadth(rows){if(!rows.length)return 0;return rows.filter(function(x){return x.s&&x.s.score>0}).length/rows.length}
+function relativeStrength(a,all){var ranked=all.map(function(x){return x.s?x.s.mom:0}).sort(function(x,y){return x-y});if(!ranked.length)return .5;var n=ranked.filter(function(v){return v<=a.s.mom}).length;return n/ranked.length}
+function psych(x){var fomo=clamp((x.rsi-65)/20,0,1)*.6+clamp((x.vr-1.8)/2,0,1)*.4;var panic=clamp((45-x.rsi)/18,0,1)*.6+clamp((1-x.vr)/.8,0,1)*.4;var crowd=fomo>0.65?'FOMO / crowded':panic>0.65?'PANIC / capitulation':'BALANCED';return {fomo:fomo,panic:panic,crowd:crowd}}
 
-function status(t, c = '') {
-    $('status').textContent = t;
-    $('status').className = 'pill ' + c;
-}
+function newsSentiment(items,symbol){var key=NAMES[symbol]||symbol.replace('USDT','');var relevant=items.filter(function(n){return n.text.toLowerCase().indexOf(key.toLowerCase())>=0||n.text.toLowerCase().indexOf('crypto')>=0});var bull=['approval','approved','adoption','partnership','launch','upgrade','inflow','bullish','integration','record','growth','funding'];var bear=['hack','exploit','lawsuit','ban','outflow','liquidation','fraud','attack','delist','bearish','unlock','sec'];var s=0;relevant.slice(0,12).forEach(function(n){var t=n.text.toLowerCase();bull.forEach(function(w){if(t.indexOf(w)>=0)s+=1});bear.forEach(function(w){if(t.indexOf(w)>=0)s-=1})});return {score:clamp(s/8,-1,1),count:relevant.length,items:relevant.slice(0,4)}}
 
-
-/* =========================================================
-   NETWORK
-   ========================================================= */
-
-async function get(path, timeout = 8000) {
-
-    for (const base of APIS) {
-
-        const controller = new AbortController();
-
-        const timer = setTimeout(
-            () => controller.abort(),
-            timeout
-        );
-
-        try {
-
-            const response = await fetch(
-                base + path,
-                {
-                    signal: controller.signal,
-                    cache: 'no-store'
-                }
-            );
-
-            clearTimeout(timer);
-
-            if (response.ok) {
-                return await response.json();
-            }
-
-            if (response.status === 429) {
-                await new Promise(
-                    resolve => setTimeout(resolve, 1200)
-                );
-            }
-
-        } catch (e) {
-
-            clearTimeout(timer);
-
+async function fetchNews(){
+  var feeds=[
+    'https://news.google.com/rss/search?q=crypto%20bitcoin%20ethereum%20when%3A7d&hl=en-GB&gl=GB&ceid=GB%3Aen',
+    'https://news.google.com/rss/search?q=crypto%20regulation%20ETF%20when%3A7d&hl=en-GB&gl=GB&ceid=GB%3Aen',
+    'https://news.google.com/rss/search?q=crypto%20Solana%20Chainlink%20XRP%20when%3A7d&hl=en-GB&gl=GB&ceid=GB%3Aen'
+  ];
+  var out=[];
+  for(var i=0;i<feeds.length;i++){
+    var ok=false;
+    var urls=[
+      'https://api.allorigins.win/raw?url='+encodeURIComponent(feeds[i]),
+      'https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(feeds[i])
+    ];
+    for(var j=0;j<urls.length&&!ok;j++){
+      try{
+        var r=await fetch(urls[j],{cache:'no-store'});if(!r.ok)throw new Error('news_http_'+r.status);var text=await r.text();
+        if(text.trim().charAt(0)==='{'){
+          var obj=JSON.parse(text);(obj.items||[]).forEach(function(it){out.push({title:it.title||'',url:it.link||'',source:it.author||'RSS',date:it.pubDate||'',text:(it.title||'')+' '+(it.description||'')})});
+        }else{
+          var xml=new DOMParser().parseFromString(text,'text/xml');Array.prototype.slice.call(xml.querySelectorAll('item')).forEach(function(it){var title=it.querySelector('title');var link=it.querySelector('link');var date=it.querySelector('pubDate');out.push({title:title?title.textContent:'',url:link?link.textContent:'',source:'RSS',date:date?date.textContent:'',text:title?title.textContent:''})});
         }
+        ok=true;
+      }catch(e){}
     }
-
-    throw Error(
-        'All market-data providers failed'
-    );
+  }
+  var seen={};out=out.filter(function(n){var k=n.title.trim().toLowerCase();if(!k||seen[k])return false;seen[k]=1;return true}).slice(0,20);
+  state.news=out;save();renderNews();return out;
 }
 
-
-/* =========================================================
-   CANDLE DATA
-   ========================================================= */
-
-async function candles(
-    sym,
-    interval = '1h',
-    limit = 180
-) {
-
-    const data = await get(
-        '/api/v3/klines?symbol=' +
-        sym +
-        '&interval=' +
-        interval +
-        '&limit=' +
-        limit
-    );
-
-    if (
-        !Array.isArray(data) ||
-        data.length < 80
-    ) {
-        throw Error(
-            'Insufficient candles ' + sym
-        );
-    }
-
-    return data.map(x => ({
-        t: +x[0],
-        o: +x[1],
-        h: +x[2],
-        l: +x[3],
-        c: +x[4],
-        v: +x[5]
-    }));
+function renderNews(){
+  var el=$('news');if(!state.news.length){el.innerHTML='<div class="empty">News provider unavailable or returned no items. No headlines are invented.</div>';return}
+  el.innerHTML=state.news.slice(0,8).map(function(n){return '<div class="newsitem"><a href="'+esc(n.url)+'" target="_blank" rel="noopener">'+esc(n.title)+'</a><div class="meta">'+esc(n.date||'Recent')+'</div></div>'}).join('');$('newsState').textContent=state.news.length+' live items';
 }
 
-
-/* =========================================================
-   INDICATORS
-   ========================================================= */
-
-function ema(a, n) {
-
-    if (a.length < n) {
-        return null;
-    }
-
-    let e = a[0];
-
-    const k = 2 / (n + 1);
-
-    for (
-        let i = 1;
-        i < a.length;
-        i++
-    ) {
-        e =
-            a[i] * k +
-            e * (1 - k);
-    }
-
-    return e;
+async function getFX(){
+  try{var r=await fetch('https://api.frankfurter.app/latest?from=USD&to=GBP',{cache:'no-store'});if(r.ok){var j=await r.json();if(j.rates&&j.rates.GBP)return num(j.rates.GBP)}}catch(e){}
+  try{var d=await request('/ticker/price?symbol=GBPUSDT');var gbpUsd=num(d.price);if(gbpUsd>0)return 1/gbpUsd}catch(e){}
+  return null;
 }
 
+function equity(mark){if(!state.position)return state.cash;return state.cash+state.position.qty*num(mark||state.position.last)}
+function currentPnl(mark){if(!state.position)return 0;var p=state.position;var exit=num(mark)*(1-CFG.SLIP);var netExit=exit*p.qty*(1-CFG.FEE);return netExit-(p.entry*p.qty+p.fee)}
+function stats(){var t=state.trades||[];var wins=t.filter(function(x){return x.pnl>0}),loss=t.filter(function(x){return x.pnl<0});var avgw=mean(wins.map(function(x){return x.pnl})),avgl=mean(loss.map(function(x){return x.pnl}));var exp=((wins.length/t.length)||0)*avgw+((loss.length/t.length)||0)*avgl;return {n:t.length,w:wins.length,l:loss.length,wr:t.length?wins.length/t.length:0,exp:exp}}
 
-function rsi(a, n = 14) {
-
-    if (a.length < n + 1) {
-        return 50;
-    }
-
-    let gains = 0;
-    let losses = 0;
-
-    for (
-        let i = a.length - n;
-        i < a.length;
-        i++
-    ) {
-
-        const d = a[i] - a[i - 1];
-
-        if (d > 0) {
-            gains += d;
-        } else {
-            losses -= d;
-        }
-    }
-
-    if (!losses) {
-        return 100;
-    }
-
-    return 100 -
-        100 /
-        (1 + gains / losses);
+function riskFor(candidate,reg,br){
+  if(!candidate||!candidate.s)return {allocation:0,reasons:['No candidate data']};
+  var s=candidate.s, alloc=1, reasons=[];
+  if(reg.score<0){alloc-=.35;reasons.push('BTC regime is defensive')}
+  if(br<.4){alloc-=.25;reasons.push('market breadth is weak')}
+  if(s.rsi>72){alloc-=.25;reasons.push('extended momentum')}
+  if(s.rsi<42){alloc-=.3;reasons.push('weak momentum')}
+  if(s.atr/s.last>.045){alloc-=.25;reasons.push('high volatility')}
+  if(candidate.psych.fomo>.72){alloc-=.2;reasons.push('crowding/FOMO')}
+  if(candidate.news.score<-.4){alloc-=.2;reasons.push('negative news evidence')}
+  alloc=clamp(alloc,0,.98);
+  return {allocation:alloc,reasons:reasons};
 }
 
-
-function atr(d, n = 14) {
-
-    const tr = [];
-
-    for (
-        let i = 1;
-        i < d.length;
-        i++
-    ) {
-
-        tr.push(
-            Math.max(
-                d[i].h - d[i].l,
-                Math.abs(
-                    d[i].h -
-                    d[i - 1].c
-                ),
-                Math.abs(
-                    d[i].l -
-                    d[i - 1].c
-                )
-            )
-        );
-    }
-
-    return tr
-        .slice(-n)
-        .reduce(
-            (a, b) => a + b,
-            0
-        ) / n;
+function candidateScore(x,reg,br,all){
+  var s=x.s, rel=relativeStrength(x,all), p=psych(s), ns=newsSentiment(state.news,x.symbol);x.psych=p;x.news=ns;x.rel=rel;
+  var score=s.score+reg.score*.45+(br-.5)*20+(rel-.5)*20;
+  if(p.fomo>.72)score-=8;if(p.panic>.72)score-=4;if(ns.score>0)score+=ns.score*5;if(ns.score<0)score+=ns.score*7;
+  if(s.rsi>78)score-=8;if(s.rsi<35)score-=8;
+  x.total=score;return x;
 }
 
-
-/* =========================================================
-   MARKET ANALYSIS
-   ========================================================= */
-
-function analyse(d) {
-
-    const c = d.map(x => x.c);
-    const v = d.map(x => x.v);
-
-    const last = c.at(-1);
-
-    const e20 = ema(c, 20);
-    const e50 = ema(c, 50);
-    const e100 = ema(c, 100);
-
-    const a = atr(d);
-
-    const rr = rsi(c);
-
-    const mom =
-        last /
-        c[c.length - 25] -
-        1;
-
-    const volumeAverage =
-        v.slice(-21, -1)
-            .reduce(
-                (a, b) => a + b,
-                0
-            ) / 20 || 1;
-
-    const vr =
-        v.at(-1) /
-        volumeAverage;
-
-    const hi =
-        Math.max(
-            ...c.slice(-48)
-        );
-
-    const lo =
-        Math.min(
-            ...c.slice(-48)
-        );
-
-    const range =
-        (last - lo) /
-        (hi - lo || 1);
-
-    let score = 0;
-
-    const why = [];
-    const opp = [];
-
-
-    /* PRICE / EMA */
-
-    if (last > e20) {
-
-        score += 12;
-        why.push(
-            'above EMA20'
-        );
-
-    } else {
-
-        score -= 10;
-        opp.push(
-            'below EMA20'
-        );
-    }
-
-
-    /* SHORT / MEDIUM TREND */
-
-    if (e20 > e50) {
-
-        score += 16;
-        why.push(
-            'EMA20 > EMA50'
-        );
-
-    } else {
-
-        score -= 14;
-        opp.push(
-            'EMA20 < EMA50'
-        );
-    }
-
-
-    /* LONGER TREND */
-
-    if (e50 > e100) {
-
-        score += 10;
-        why.push(
-            'long trend positive'
-        );
-
-    } else {
-
-        score -= 10;
-        opp.push(
-            'long trend negative'
-        );
-    }
-
-
-    /* RSI */
-
-    if (
-        rr >= 52 &&
-        rr <= 70
-    ) {
-
-        score += 10;
-
-        why.push(
-            'healthy RSI'
-        );
-
-    } else if (rr > 75) {
-
-        score -= 14;
-
-        opp.push(
-            'overbought'
-        );
-
-    } else if (rr < 30) {
-
-        score += 6;
-
-        why.push(
-            'capitulation potential'
-        );
-
-    } else {
-
-        score -= 3;
-
-        opp.push(
-            'weak RSI'
-        );
-    }
-
-
-    /* MOMENTUM */
-
-    if (mom > 0.025) {
-
-        score += 14;
-
-        why.push(
-            'positive momentum'
-        );
-
-    } else if (mom < -0.025) {
-
-        score -= 14;
-
-        opp.push(
-            'negative momentum'
-        );
-    }
-
-
-    /* VOLUME */
-
-    if (vr > 1.35) {
-
-        score += 8;
-
-        why.push(
-            'volume expansion'
-        );
-    }
-
-
-    /* EXTREME POSITION */
-
-    if (range > 0.88) {
-
-        score -= 9;
-
-        opp.push(
-            'near 48h high / chase risk'
-        );
-    }
-
-
-    if (range < 0.12) {
-
-        score += 5;
-
-        why.push(
-            'near 48h low / reversal potential'
-        );
-    }
-
-
-    return {
-        last,
-        e20,
-        e50,
-        e100,
-        atr: a,
-        atrPct: a / last,
-        rsi: rr,
-        mom,
-        vr,
-        range,
-        score,
-        why,
-        opp
-    };
-}
-
-
-/* =========================================================
-   ASSET
-   ========================================================= */
-
-async function asset(sym) {
-
-    const d =
-        await candles(sym);
-
-    return {
-        sym,
-        s: analyse(d)
-    };
-}
-
-
-/* =========================================================
-   PSYCHOLOGY ENGINE
-   ========================================================= */
-
-function psych(x) {
-
-    const s = x.s;
-
-    let fomo = 0;
-    let panic = 0;
-
-
-    /* FOMO */
-
-    if (s.mom > 0.05) {
-        fomo += 55;
-    }
-
-    if (s.vr > 1.8) {
-        fomo += 25;
-    }
-
-    if (s.range > 0.9) {
-        fomo += 20;
-    }
-
-
-    /* PANIC */
-
-    if (s.mom < -0.05) {
-        panic += 55;
-    }
-
-    if (
-        s.vr > 1.8 &&
-        s.mom < 0
-    ) {
-        panic += 25;
-    }
-
-    if (s.range < 0.08) {
-        panic += 20;
-    }
-
-
-    let label = 'NEUTRAL';
-
-    if (fomo >= 70) {
-        label = 'FOMO / CROWDING';
-    } else if (panic >= 70) {
-        label = 'PANIC / CAPITULATION';
-    } else if (fomo >= 40) {
-        label = 'OPTIMISM';
-    } else if (panic >= 40) {
-        label = 'FEAR';
-    }
-
-
-    return {
-        fomo: Math.min(100, fomo),
-        panic: Math.min(100, panic),
-        label
-    };
-}
-
-
-/* =========================================================
-   MARKET REGIME
-   ========================================================= */
-
-async function regime() {
-
-    const b =
-        await asset('BTCUSDT');
-
-    let name;
-
-    if (b.s.score >= 38) {
-
-        name =
-            'RISK-ON / BULLISH';
-
-    } else if (
-        b.s.score <= -30
-    ) {
-
-        name =
-            'RISK-OFF / BEARISH';
-
-    } else {
-
-        name =
-            'SIDEWAYS / TRANSITION';
-    }
-
-    return {
-        ...b,
-        name
-    };
-}
-
-
-/* =========================================================
-   DECISION ENGINE
-   ========================================================= */
-
-function decide(list, reg) {
-
-    if (S.position) {
-
-        return {
-            action: 'HOLD',
-            asset: S.position.sym,
-            confidence: 70,
-            reasons: [
-                'One-position rule: manage existing position'
-            ],
-            opp: []
-        };
-    }
-
-
-    if (!list.length) {
-
-        return {
-            action: 'WAIT',
-            confidence: 0,
-            reasons: [
-                'No valid deep-analysis candidates'
-            ],
-            opp: []
-        };
-    }
-
-
-    const candidates =
-        list.map(x => ({
-            ...x,
-            p: psych(x)
-        }));
-
-
-    candidates.sort(
-        (a, b) =>
-            b.s.score -
-            a.s.score
-    );
-
-
-    const q =
-        candidates[0];
-
-
-    /*
-       Confidence starts from neutral,
-       then market and BTC regime
-       influence it.
-    */
-
-    let conf =
-        50 +
-        q.s.score * 0.55 +
-        reg.s.score * 0.15;
-
-
-    /*
-       Crowding penalty
-    */
-
-    if (q.p.fomo >= 70) {
-        conf -= 18;
-    }
-
-
-    /*
-       Bear-market veto influence
-    */
-
-    if (
-        reg.name ===
-        'RISK-OFF / BEARISH'
-    ) {
-        conf -= 22;
-    }
-
-
-    conf = Math.max(
-        0,
-        Math.min(
-            99,
-            Math.round(conf)
-        )
-    );
-
-
-    const buy =
-        conf >= CFG.MIN_CONF &&
-        q.s.score >= 35 &&
-        reg.name !==
-            'RISK-OFF / BEARISH' &&
-        q.p.fomo < 90;
-
-
-    return {
-        action: buy
-            ? 'BUY'
-            : 'WAIT',
-
-        asset: q.sym,
-
-        confidence: conf,
-
-        reasons: [
-            ...q.s.why,
-            'BTC regime: ' +
-                reg.name,
-            'Crowd state: ' +
-                q.p.label
-        ],
-
-        opp: [
-            ...q.s.opp,
-
-            ...(q.p.fomo >= 70
-                ? [
-                    'crowding/FOMO pressure'
-                ]
-                : []),
-
-            ...(reg.s.score < 0
-                ? [
-                    'BTC not confirming'
-                ]
-                : [])
-        ],
-
-        top: q
-    };
-}
-
-
-/* =========================================================
-   OPEN POSITION
-   ========================================================= */
-
-function open(x) {
-
-    if (S.position) {
-        return;
-    }
-
-
-    /*
-       V7 can deploy the entire
-       available paper account when
-       the decision engine permits it.
-    */
-
-    const alloc =
-        Math.min(
-            S.cash,
-            S.cash *
-                CFG.MAX_ALLOCATION
-        );
-
-
-    const entry =
-        x.s.last *
-        (1 + CFG.SLIP);
-
-
-    const fee =
-        alloc *
-        CFG.FEE;
-
-
-    const qty =
-        (alloc - fee) /
-        entry;
-
-
-    S.cash -= alloc;
-
-
-    S.position = {
-
-        sym: x.sym,
-
-        qty,
-
-        entry,
-
-        stop:
-            entry -
-            Math.max(
-                x.s.atr * 1.7,
-                entry * 0.025
-            ),
-
-        target:
-            entry * 1.06,
-
-        peak: entry,
-
-        opened: Date.now()
-    };
-
-
-    S.log.unshift({
-
-        t: Date.now(),
-
-        type: 'BUY',
-
-        sym: x.sym,
-
-        price: entry,
-
-        pnl: null
-    });
-
-
-    save();
-}
-
-
-/* =========================================================
-   POSITION MANAGEMENT
-   ========================================================= */
-
-function manage(mark) {
-
-    if (!S.position) {
-        return;
-    }
-
-
-    const p =
-        S.position;
-
-
-    p.peak =
-        Math.max(
-            p.peak,
-            mark
-        );
-
-
-    const trail =
-        p.peak * 0.982;
-
-
-    const stop =
-        Math.max(
-            p.stop,
-            trail
-        );
-
-
-    const loss =
-        mark /
-        p.entry -
-        1;
-
-
-    const stopHit =
-        mark <= stop;
-
-    const maxLoss =
-        loss <=
-        -CFG.MAX_LOSS;
-
-    const targetHit =
-        mark >=
-        p.target;
-
-
-    if (
-        maxLoss ||
-        stopHit ||
-        targetHit
-    ) {
-
-        const exit =
-            mark *
-            (1 - CFG.SLIP);
-
-
-        const gross =
-            p.qty *
-            exit;
-
-
-        const fee =
-            gross *
-            CFG.FEE;
-
-
-        const pnl =
-            gross -
-            fee -
-            p.qty *
-            p.entry;
-
-
-        S.cash +=
-            gross -
-            fee;
-
-
-        S.log.unshift({
-
-            t: Date.now(),
-
-            type: 'SELL',
-
-            sym: p.sym,
-
-            price: exit,
-
-            pnl
-        });
-
-
-        S.position = null;
-
-        save();
-    }
-}
-
-
-/* =========================================================
-   EQUITY
-   ========================================================= */
-
-function equity(markets) {
-
-    return (
-        S.cash +
-        (
-            S.position &&
-            markets[S.position.sym]
-                ? S.position.qty *
-                  markets[
-                      S.position.sym
-                  ].s.last
-                : 0
-        )
-    );
-}
-
-
-/* =========================================================
-   RENDER
-   ========================================================= */
-
-function render(
-    reg,
-    all,
-    dec
-) {
-
-    const map =
-        Object.fromEntries(
-            all.map(
-                x => [
-                    x.sym,
-                    x
-                ]
-            )
-        );
-
-
-    S.equity =
-        equity(map);
-
-
-    $('equity').textContent =
-        money(S.equity);
-
-
-    $('cash').textContent =
-        'Cash ' +
-        money(S.cash);
-
-
-    $('decision').textContent =
-        dec.action +
-        (
-            dec.asset
-                ? ' ' +
-                  dec.asset.replace(
-                      'USDT',
-                      ''
-                  )
-                : ''
-        );
-
-
-    $('confidence').textContent =
-        dec.confidence +
-        '%';
-
-
-    $('regime').textContent =
-        reg.name;
-
-
-    $('regimeWhy').textContent =
-        reg.s.why
-            .concat(reg.s.opp)
-            .slice(0, 4)
-            .join(' • ');
-
-
-    $('position').textContent =
-        S.position
-            ? S.position.sym.replace(
-                'USDT',
-                ''
-              )
-            : 'FLAT';
-
-
-    $('posInfo').textContent =
-        S.position
-            ? 'Entry ' +
-              money(
-                  S.position.entry
-              ) +
-              ' | Stop ' +
-              money(
-                  S.position.stop
-              )
-            : 'No exposure';
-
-
-    /* =====================================================
-       RADAR TABLE
-       ===================================================== */
-
-    $('radar').innerHTML =
-        '<table>' +
-        '<tr>' +
-        '<th>Asset</th>' +
-        '<th>Score</th>' +
-        '<th>RSI</th>' +
-        '<th>Momentum</th>' +
-        '<th>Volume</th>' +
-        '<th>Crowd</th>' +
-        '</tr>' +
-
-        all.map(x => {
-
-            const p =
-                psych(x);
-
-            return (
-                '<tr>' +
-                '<td>' +
-                x.sym.replace(
-                    'USDT',
-                    ''
-                ) +
-                '</td>' +
-
-                '<td>' +
-                x.s.score +
-                '</td>' +
-
-                '<td>' +
-                x.s.rsi.toFixed(1) +
-                '</td>' +
-
-                '<td>' +
-                pct(x.s.mom) +
-        
+async function deep(symbol){
+  var data=await Promise.all([klines(symbol,'15m',180),klines(symbol,'1h',180),klines(symbol,'4h',140),klines(symbol,'1d',100)]);
+  var t15=technical(data[0]),t1=technical(data[1]),t4=technical(data[2]),td=technical(data[3]);
+  var s=Object.assign({},t1);s.tf15=t15;s.tf4=t4;s.tfd=td;
+  s.score=(t15.score*.15)+(t1.score*.4)+(t4.score*.3)+(td.score*.15);
+  s.last=t1.last;
+  return {symbo
